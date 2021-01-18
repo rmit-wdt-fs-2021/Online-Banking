@@ -19,9 +19,10 @@ namespace InternetBanking.Models
         [Display(Name = "Account Number")]
         public int AccountNumber { get; set; }
 
-        [Display(Name = "Type")]
+        [Required, Display(Name = "Type")]
         public AccountType AccountType { get; set; }
 
+        [Required]
         public int CustomerID { get; set; }
         public virtual Customer Customer { get; set; }
 
