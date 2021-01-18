@@ -31,5 +31,8 @@ namespace InternetBanking.Models
         public decimal Balance { get; set; }
 
         public virtual List<Transaction> Transactions { get; set; }
+
+        [Required]
+        public DateTime ModifyDate { get; set; }
     }
 }

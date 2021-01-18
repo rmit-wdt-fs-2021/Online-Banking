@@ -40,24 +40,29 @@ namespace InternetBanking.Data
                     Name = "Shekhar Kalra"
                 });
 
+            const string format = "dd/MM/yyyy hh:mm:ss tt";
+
             context.Logins.AddRange(
                 new Login
                 {
                     LoginID = "12345678",
                     CustomerID = 2100,
-                    PasswordHash = "YBNbEL4Lk8yMEWxiKkGBeoILHTU7WZ9n8jJSy8TNx0DAzNEFVsIVNRktiQV+I8d2"
+                    PasswordHash = "YBNbEL4Lk8yMEWxiKkGBeoILHTU7WZ9n8jJSy8TNx0DAzNEFVsIVNRktiQV+I8d2",
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 },
                 new Login
                 {
                     LoginID = "38074569",
                     CustomerID = 2200,
-                    PasswordHash = "EehwB3qMkWImf/fQPlhcka6pBMZBLlPWyiDW6NLkAh4ZFu2KNDQKONxElNsg7V04"
+                    PasswordHash = "EehwB3qMkWImf/fQPlhcka6pBMZBLlPWyiDW6NLkAh4ZFu2KNDQKONxElNsg7V04",
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 },
                 new Login
                 {
                     LoginID = "17963428",
                     CustomerID = 2300,
-                    PasswordHash = "LuiVJWbY4A3y1SilhMU5P00K54cGEvClx5Y+xWHq7VpyIUe5fe7m+WeI0iwid7GE"
+                    PasswordHash = "LuiVJWbY4A3y1SilhMU5P00K54cGEvClx5Y+xWHq7VpyIUe5fe7m+WeI0iwid7GE",
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 });
 
             context.Accounts.AddRange(
@@ -66,32 +71,35 @@ namespace InternetBanking.Data
                     AccountNumber = 4100,
                     AccountType = AccountType.Saving,
                     CustomerID = 2100,
-                    Balance = 500
+                    Balance = 500,
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 },
                 new Account
                 {
                     AccountNumber = 4101,
                     AccountType = AccountType.Checking,
                     CustomerID = 2100,
-                    Balance = 500
+                    Balance = 500,
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 },
                 new Account
                 {
                     AccountNumber = 4200,
                     AccountType = AccountType.Saving,
                     CustomerID = 2200,
-                    Balance = 500.95m
+                    Balance = 500.95m,
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 },
                 new Account
                 {
                     AccountNumber = 4300,
                     AccountType = AccountType.Checking,
                     CustomerID = 2300,
-                    Balance = 1250.50m
+                    Balance = 1250.50m,
+                    ModifyDate = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 });
 
             const string initialDeposit = "Initial deposit";
-            const string format = "dd/MM/yyyy hh:mm:ss tt";
 
             context.Transactions.AddRange(
                 new Transaction

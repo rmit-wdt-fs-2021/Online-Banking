@@ -33,5 +33,7 @@ namespace InternetBanking.Models
         public string Comment { get; set; }
 
         public DateTime TransactionTimeUtc { get; set; }
+
+        public DateTime ModifyDate { get; set; }
     }
 }

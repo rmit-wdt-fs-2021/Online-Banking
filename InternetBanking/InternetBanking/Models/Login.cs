@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace InternetBanking.Models
 {
@@ -13,5 +14,8 @@ namespace InternetBanking.Models
 
         [Required, StringLength(64)]
         public string PasswordHash { get; set; }
+
+        [Required]
+        public DateTime ModifyDate { get; set; }
     }
 }
