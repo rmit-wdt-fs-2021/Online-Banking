@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace InternetBanking.Models
 {
-    public class Transaciton
+    public class Transaction
     {
     }
 }
