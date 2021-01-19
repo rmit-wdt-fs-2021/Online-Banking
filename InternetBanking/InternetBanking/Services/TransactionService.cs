@@ -2,6 +2,7 @@
 using InternetBanking.Exceptions;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
+using InternetBanking.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,9 @@ namespace InternetBanking.Services
     public class TransactionService : ITransactionService
     {
         private readonly McbaContext _context;
+        private const int freeTransactions = 4;
 
+        // TODO : Add logger
         public TransactionService(McbaContext context)
         {
             _context = context;
@@ -50,17 +53,80 @@ namespace InternetBanking.Services
             account.Balance -= amount;
             AddTransaction(account, TransactionType.Withdraw, amount);
 
+            if (!account.HasFreeTransactions(freeTransactions))
+            {
+                AddServiceChargeTransaction(account, TransactionType.Withdraw);
+            }
+
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddTransferTransactionAsync(int id, int destId, decimal amount, string comment = null)
+        {
+            var srcAccount = await _context.Accounts.FindAsync(id);
+            var destAccount = await _context.Accounts.FindAsync(destId);
 
-        private void AddTransaction(Account account, TransactionType type, decimal amt)
+            if (srcAccount is null || destAccount is null)
+            {
+                throw new NullReferenceException($"Unable to find account.");
+            }
+
+            if (!IsValidAmount(srcAccount, amount))
+            {
+                throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
+            }
+
+            UpdateTransferAccountBalances(srcAccount, destAccount, amount);
+
+            if (!srcAccount.HasFreeTransactions(freeTransactions))
+            {
+                AddServiceChargeTransaction(srcAccount, TransactionType.Transfer);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private void AddServiceChargeTransaction(Account account, TransactionType type)
+        {
+            decimal serviceCharge;
+            if (type == TransactionType.Transfer)
+            {
+                serviceCharge = 0.20M;
+            }
+            else if (type == TransactionType.Withdraw)
+            {
+                serviceCharge = 0.10M;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unable to apply service charge for {nameof(type)}");
+            }
+
+            if (!IsValidAmount(account, serviceCharge))
+            {
+                throw new AccountBalanceUpdateException($"Unable to update account by {nameof(serviceCharge)}");
+            }
+
+            account.Balance -= serviceCharge;
+            AddTransaction(account, TransactionType.ServiceCharge, serviceCharge);
+        }
+
+        private void UpdateTransferAccountBalances(Account srcAccount, Account destAccount, decimal amount)
+        {
+            srcAccount.Balance -= amount;
+            AddTransaction(srcAccount, TransactionType.Transfer, amount);
+
+            destAccount.Balance += amount;
+        }
+
+        private void AddTransaction(Account account, TransactionType type, decimal amt, string comment = null)
         {
             account.Transactions.Add(
                 new Transaction
                 {
                     TransactionType = type,
                     Amount = amt,
+                    Comment = comment,
                     TransactionTimeUtc = DateTime.UtcNow
                 });
         }
