@@ -52,6 +52,7 @@ namespace InternetBanking.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Withdraw(int id) => View(await _context.Accounts.FindAsync(id));
 
         [HttpPost]
         public async Task<IActionResult> Withdraw(int id, decimal amount)
