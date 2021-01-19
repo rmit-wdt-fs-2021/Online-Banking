@@ -1,4 +1,6 @@
 using InternetBanking.Data;
+using InternetBanking.Interfaces;
+using InternetBanking.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,9 @@ namespace InternetBanking
             {
                 options.Cookie.IsEssential = true;
             });
+
+            // Add business services.
+            services.AddScoped<ITransactionService, TransactionService>();
 
             services.AddControllersWithViews();
         }

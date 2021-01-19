@@ -1,4 +1,5 @@
 ﻿using InternetBanking.Data;
+using InternetBanking.Interfaces;
 using InternetBanking.Models;
 using InternetBanking.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +14,15 @@ namespace InternetBanking.Controllers
     public class CustomerController : Controller
     {
         private readonly McbaContext _context;
+        private readonly ITransactionService _transactionService;
 
-        // ReSharper disable once PossibleInvalidOperationException
         private int CustomerID => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
 
-        public CustomerController(McbaContext context) => _context = context;
+        public CustomerController(McbaContext context, ITransactionService transactionService)
+        {
+            _context = context;
+            _transactionService = transactionService;
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -40,6 +45,28 @@ namespace InternetBanking.Controllers
         {
             var account = await _context.Accounts.FindAsync(id);
 
+            IsValidAmount(amount, account);
+
+            await _transactionService.AddDepositTransactionAsync(id, amount).ConfigureAwait(false);
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Withdraw(int id, decimal amount)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+
+            IsValidAmount(amount, account);
+
+            await _transactionService.AddWithdrawTransactionAsync(id, amount).ConfigureAwait(false);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private IActionResult IsValidAmount(decimal amount, Account account)
+        {
             if (amount <= 0)
                 ModelState.AddModelError(nameof(amount), "Amount must be positive.");
             if (amount.HasMoreThanTwoDecimalPlaces())
@@ -49,20 +76,7 @@ namespace InternetBanking.Controllers
                 ViewBag.Amount = amount;
                 return View(account);
             }
-
-            // Note this code could be moved out of the controller, e.g., into the Model.
-            account.Balance += amount;
-            account.Transactions.Add(
-                new Transaction
-                {
-                    TransactionType = TransactionType.Deposit,
-                    Amount = amount,
-                    TransactionTimeUtc = DateTime.UtcNow
-                });
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            return new EmptyResult();
         }
     }
 }
