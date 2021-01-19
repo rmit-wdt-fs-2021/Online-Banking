@@ -47,7 +47,7 @@ namespace InternetBanking.Controllers
 
             IsValidAmount(amount, account);
 
-            await _transactionService.AddDepositTransactionAsync(id, amount).ConfigureAwait(false);
+            await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
 
 
             return RedirectToAction(nameof(Index));
@@ -61,7 +61,20 @@ namespace InternetBanking.Controllers
 
             IsValidAmount(amount, account);
 
-            await _transactionService.AddWithdrawTransactionAsync(id, amount).ConfigureAwait(false);
+            await _transactionService.AddWithdrawTransactionAsync(account, amount).ConfigureAwait(false);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Transfer(int srcId, int destId, decimal amount, string comment = null)
+        {
+            var srcAccount = await _context.Accounts.FindAsync(srcId);
+            var destAccount = await _context.Accounts.FindAsync(destId);
+
+            IsValidAmount(amount, srcAccount);
+
+            await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amount, comment);
 
             return RedirectToAction(nameof(Index));
         }

@@ -21,28 +21,25 @@ namespace InternetBanking.Services
             _context = context;
         }
 
-        public async Task AddDepositTransactionAsync(int id, decimal amount)
+        public async Task AddDepositTransactionAsync(Account account, decimal amount)
         {
-            var account = await _context.Accounts.FindAsync(id);
-
             if (account is null)
             {
-                throw new NullReferenceException($"Unable to find account with {nameof(id)}");
+                throw new ArgumentNullException($"{nameof(account)} cannot be null.");
             }
+
             account.Balance += amount;
             AddTransaction(account, TransactionType.Deposit, amount);
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddWithdrawTransactionAsync(int id, decimal amount)
+        public async Task AddWithdrawTransactionAsync(Account account, decimal amount)
         {
-
-            var account = await _context.Accounts.FindAsync(id);
 
             if (account is null)
             {
-                throw new NullReferenceException($"Unable to find account with {nameof(id)}");
+                throw new ArgumentNullException($"{nameof(account)} cannot be null.");
             }
 
             if (!IsValidAmount(account, amount))
@@ -61,11 +58,8 @@ namespace InternetBanking.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddTransferTransactionAsync(int id, int destId, decimal amount, string comment = null)
+        public async Task AddTransferTransactionAsync(Account srcAccount, Account destAccount, decimal amount, string comment = null)
         {
-            var srcAccount = await _context.Accounts.FindAsync(id);
-            var destAccount = await _context.Accounts.FindAsync(destId);
-
             if (srcAccount is null || destAccount is null)
             {
                 throw new NullReferenceException($"Unable to find account.");
