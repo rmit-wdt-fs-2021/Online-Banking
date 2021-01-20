@@ -39,6 +39,7 @@ namespace InternetBanking
 
             // Add business services.
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             services.AddControllersWithViews();
         }

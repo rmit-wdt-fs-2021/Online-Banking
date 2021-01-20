@@ -42,7 +42,7 @@ namespace InternetBanking.Services
                 throw new ArgumentNullException($"{nameof(account)} cannot be null.");
             }
 
-            if (!IsValidAmount(account, amount))
+            if (!IsValidDeductionAmount(account, amount))
             {
                 throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
             }
@@ -65,7 +65,7 @@ namespace InternetBanking.Services
                 throw new NullReferenceException($"Unable to find account.");
             }
 
-            if (!IsValidAmount(srcAccount, amount))
+            if (!IsValidDeductionAmount(srcAccount, amount))
             {
                 throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
             }
@@ -96,7 +96,7 @@ namespace InternetBanking.Services
                 throw new InvalidOperationException($"Unable to apply service charge for {nameof(type)}");
             }
 
-            if (!IsValidAmount(account, serviceCharge))
+            if (!IsValidDeductionAmount(account, serviceCharge))
             {
                 throw new AccountBalanceUpdateException($"Unable to update account by {nameof(serviceCharge)}");
             }
@@ -125,7 +125,7 @@ namespace InternetBanking.Services
                 });
         }
 
-        private bool IsValidAmount(Account account, decimal amount)
+        private bool IsValidDeductionAmount(Account account, decimal amount)
         {
             bool retVal = true;
             const int checkingAccMinBal = 200;

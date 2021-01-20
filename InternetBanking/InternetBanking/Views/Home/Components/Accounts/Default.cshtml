@@ -1,0 +1,8 @@
+﻿@model IEnumerable<InternetBanking.Models.Account>
+
+<ul>
+    @foreach (var account in Model)
+    {
+        <li>@account.AccountNumber - @account.Balance </li>
+    }
+</ul>

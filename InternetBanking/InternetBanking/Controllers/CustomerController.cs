@@ -1,16 +1,15 @@
 ﻿using InternetBanking.Data;
+using InternetBanking.Filters;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
 using InternetBanking.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace InternetBanking.Controllers
 {
+    [AuthorizeCustomer]
     public class CustomerController : Controller
     {
         private readonly McbaContext _context;
@@ -66,11 +65,13 @@ namespace InternetBanking.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Transfer(int id) => View(await _context.Accounts.FindAsync(id));
+
         [HttpPost]
-        public async Task<IActionResult> Transfer(int srcId, int destId, decimal amount, string comment = null)
+        public async Task<IActionResult> Transfer(int id, int toAccount, decimal amount, string comment = null)
         {
-            var srcAccount = await _context.Accounts.FindAsync(srcId);
-            var destAccount = await _context.Accounts.FindAsync(destId);
+            var srcAccount = await _context.Accounts.FindAsync(id);
+            var destAccount = await _context.Accounts.FindAsync(toAccount);
 
             IsValidAmount(amount, srcAccount);
 
