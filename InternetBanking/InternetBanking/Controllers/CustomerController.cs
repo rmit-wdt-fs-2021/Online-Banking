@@ -3,6 +3,7 @@ using InternetBanking.Filters;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
 using InternetBanking.Utilities;
+using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -37,17 +38,26 @@ namespace InternetBanking.Controllers
             return View(customer);
         }
 
-        public async Task<IActionResult> Deposit(int id) => View(await _context.Accounts.FindAsync(id));
+        public async Task<IActionResult> Deposit(int accountNumber)
+        {
+            return View(
+                new ATMViewModel
+                {
+                    AccountNumber = accountNumber,
+                    Account = await _context.Accounts.FindAsync(accountNumber)
+                });
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Deposit(int id, decimal amount)
+        public async Task<IActionResult> Deposit(ATMViewModel viewModel)
         {
-            var account = await _context.Accounts.FindAsync(id);
+            viewModel.Account = await _context.Accounts.FindAsync(viewModel.AccountNumber);
+            var account = viewModel.Account;
+            var amount = viewModel.Amount;
 
             IsValidAmount(amount, account);
 
             await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
-
 
             return RedirectToAction(nameof(Index));
         }
@@ -73,6 +83,18 @@ namespace InternetBanking.Controllers
             var srcAccount = await _context.Accounts.FindAsync(id);
             var destAccount = await _context.Accounts.FindAsync(toAccount);
 
+            if(srcAccount is null)
+            {
+                ModelState.AddModelError(nameof(srcAccount), "Unable to find account with id.");
+                return View();
+            }
+
+            if(destAccount is null)
+            {
+                ModelState.AddModelError(nameof(destAccount), "Unable to find account with id.");
+
+            }
+
             IsValidAmount(amount, srcAccount);
 
             await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amount, comment);
@@ -80,7 +102,7 @@ namespace InternetBanking.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private IActionResult IsValidAmount(decimal amount, Account account)
+        private IActionResult IsValidAmount(decimal amount, object model)
         {
             if (amount <= 0)
                 ModelState.AddModelError(nameof(amount), "Amount must be positive.");
@@ -89,7 +111,7 @@ namespace InternetBanking.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Amount = amount;
-                return View(account);
+                return View(model);
             }
             return new EmptyResult();
         }

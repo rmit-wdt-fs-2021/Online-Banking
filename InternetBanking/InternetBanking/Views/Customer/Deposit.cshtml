@@ -1,20 +1,19 @@
-﻿@model Account
+﻿@model InternetBanking.ViewModels.ATMViewModel
 @{
     ViewData["Title"] = "Deposit";
 }
 
-<h1 class="display-4">Account Number @Model.AccountNumber (@Model.AccountType)</h1>
+<h1 class="display-4">Account Number @Model.Account.AccountNumber (@Model.Account.AccountType)</h1>
 
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Deposit">
+            <input type="hidden" asp-for="AccountNumber" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label for="Amount" class="control-label">Amount</label>
-                <input id="Amount" name="Amount" class="form-control" value="@ViewBag.Amount?.ToString("0.00")"
-                       data-val="true" data-val-number="The field Amount must be a number."
-                       data-val-required="The Amount field is required." />
-                @Html.ValidationMessage("Amount", new { @class = "text-danger" })
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Deposit" class="btn btn-primary" />

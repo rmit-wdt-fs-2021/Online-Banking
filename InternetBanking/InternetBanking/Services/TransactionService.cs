@@ -65,6 +65,11 @@ namespace InternetBanking.Services
                 throw new NullReferenceException($"Unable to find account.");
             }
 
+            if(srcAccount.AccountNumber == destAccount.AccountNumber)
+            {
+                throw new ArgumentException($"{nameof(srcAccount)} and {nameof(destAccount)} accounts cannot be same.");
+            }
+
             if (!IsValidDeductionAmount(srcAccount, amount))
             {
                 throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
