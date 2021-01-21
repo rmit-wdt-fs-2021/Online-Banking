@@ -90,32 +90,48 @@ namespace InternetBanking.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Transfer(int id) => View(await _context.Accounts.FindAsync(id));
+        public async Task<IActionResult> Transfer(int accountNumber)
+        {
+            return View(new TransferViewModel {
+                FromAccountNumber = accountNumber,
+                Account = await _context.Accounts.FindAsync(accountNumber),
+            });
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Transfer(int id, int toAccount, decimal amount, string comment = null)
+        public async Task<IActionResult> Transfer(int toAccountNumber, decimal amount, TransferViewModel viewModel, string comment = null)
         {
-            var srcAccount = await _context.Accounts.FindAsync(id);
-            var destAccount = await _context.Accounts.FindAsync(toAccount);
+            viewModel.Account = await _context.Accounts.FindAsync(viewModel.FromAccountNumber);
+            viewModel.ToAccountNumber = toAccountNumber;
+            viewModel.Comment = comment;
+            viewModel.Amount = amount;
+            //viewModel.ToAccount = await _context.Accounts.FindAsync(viewModel.FromAccountNumber);
 
-            if(srcAccount is null)
+            var srcAccount = viewModel.Account;
+            var destAccount = await _context.Accounts.FindAsync(viewModel.ToAccountNumber);
+            var amt = viewModel.Amount;
+
+            if (srcAccount is null)
             {
                 ModelState.AddModelError(nameof(srcAccount), "Unable to find account with id.");
-                return View();
             }
 
             if(destAccount is null)
             {
                 ModelState.AddModelError(nameof(destAccount), "Unable to find account with id.");
-
             }
 
-            if (!IsValidAmount(amount))
+            if(srcAccount.AccountNumber == destAccount.AccountNumber)
             {
-               // return View(viewModel);
+                ModelState.AddModelError(nameof(viewModel.ToAccountNumber), "Source and destination accounts cannot be the same.");
             }
 
-            await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amount, comment);
+            if (!IsValidAmount(amt) || !ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amt, viewModel.Comment);
 
             return RedirectToAction(nameof(Index));
         }
