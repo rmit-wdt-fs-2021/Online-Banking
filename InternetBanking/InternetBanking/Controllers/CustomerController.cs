@@ -59,7 +59,10 @@ namespace InternetBanking.Controllers
             var account = viewModel.Account;
             var amount = viewModel.Amount;
 
-            IsValidAmount(amount, viewModel);
+            if (!IsValidAmount(amount))
+            {
+                return View(viewModel);
+            }
 
             await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
 
@@ -77,7 +80,10 @@ namespace InternetBanking.Controllers
             var account = viewModel.Account;
             var amount = viewModel.Amount;
 
-            IsValidAmount(amount, viewModel);
+            if (!IsValidAmount(amount))
+            {
+                return View(viewModel);
+            }
 
             await _transactionService.AddWithdrawTransactionAsync(account, amount).ConfigureAwait(false);
 
@@ -104,25 +110,29 @@ namespace InternetBanking.Controllers
 
             }
 
-            IsValidAmount(amount, srcAccount);
+            if (!IsValidAmount(amount))
+            {
+               // return View(viewModel);
+            }
 
             await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amount, comment);
 
             return RedirectToAction(nameof(Index));
         }
 
-        private IActionResult IsValidAmount(decimal amount, object model)
+        private bool IsValidAmount(decimal amount)
         {
             if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
-            if (!ModelState.IsValid)
             {
-                ViewBag.Amount = amount;
-                return View(model);
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
             }
-            return new EmptyResult();
+
+            if (amount.HasMoreThanTwoDecimalPlaces())
+            {
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+            }
+
+            return ModelState.IsValid;
         }
     }
 }
