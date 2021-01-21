@@ -40,12 +40,16 @@ namespace InternetBanking.Controllers
 
         public async Task<IActionResult> Deposit(int accountNumber)
         {
-            return View(
-                new ATMViewModel
-                {
-                    AccountNumber = accountNumber,
-                    Account = await _context.Accounts.FindAsync(accountNumber)
-                });
+            return View(await CreateATMViewModelAsync(accountNumber).ConfigureAwait(false));
+        }
+
+        private async Task<ATMViewModel> CreateATMViewModelAsync(int accountNumber)
+        {
+            return new ATMViewModel
+            {
+                AccountNumber = accountNumber,
+                Account = await _context.Accounts.FindAsync(accountNumber)
+            };
         }
 
         [HttpPost]
@@ -55,20 +59,25 @@ namespace InternetBanking.Controllers
             var account = viewModel.Account;
             var amount = viewModel.Amount;
 
-            IsValidAmount(amount, account);
+            IsValidAmount(amount, viewModel);
 
             await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> Withdraw(int id) => View(await _context.Accounts.FindAsync(id));
+        public async Task<IActionResult> Withdraw(int accountNumber)
+        {
+            return View(await CreateATMViewModelAsync(accountNumber).ConfigureAwait(false));
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Withdraw(int id, decimal amount)
+        public async Task<IActionResult> Withdraw(ATMViewModel viewModel)
         {
-            var account = await _context.Accounts.FindAsync(id);
+            viewModel.Account = await _context.Accounts.FindAsync(viewModel.AccountNumber);
+            var account = viewModel.Account;
+            var amount = viewModel.Amount;
 
-            IsValidAmount(amount, account);
+            IsValidAmount(amount, viewModel);
 
             await _transactionService.AddWithdrawTransactionAsync(account, amount).ConfigureAwait(false);
 
