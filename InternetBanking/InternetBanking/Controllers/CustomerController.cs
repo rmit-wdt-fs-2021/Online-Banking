@@ -1,4 +1,5 @@
 ﻿using InternetBanking.Data;
+using InternetBanking.Exceptions;
 using InternetBanking.Filters;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
@@ -6,6 +7,7 @@ using InternetBanking.Utilities;
 using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace InternetBanking.Controllers
@@ -64,7 +66,19 @@ namespace InternetBanking.Controllers
                 return View(viewModel);
             }
 
-            await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
+            try
+            {
+                await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(string.Empty, "Something went wrong and withdraw was unsuccessful");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -85,14 +99,30 @@ namespace InternetBanking.Controllers
                 return View(viewModel);
             }
 
-            await _transactionService.AddWithdrawTransactionAsync(account, amount).ConfigureAwait(false);
+            try
+            {
+                await _transactionService.AddWithdrawTransactionAsync(account, amount).ConfigureAwait(false);
+            }
+            catch (AccountBalanceUpdateException)
+            {
+                ModelState.AddModelError(nameof(amount), "It appears you do not have enough funds in this account for this transaction.");
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(string.Empty, "Something went wrong and withdraw was unsuccessful");
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Transfer(int accountNumber)
         {
-            return View(new TransferViewModel {
+            return View(new TransferViewModel
+            {
                 FromAccountNumber = accountNumber,
                 Account = await _context.Accounts.FindAsync(accountNumber),
             });
@@ -105,7 +135,6 @@ namespace InternetBanking.Controllers
             viewModel.ToAccountNumber = toAccountNumber;
             viewModel.Comment = comment;
             viewModel.Amount = amount;
-            //viewModel.ToAccount = await _context.Accounts.FindAsync(viewModel.FromAccountNumber);
 
             var srcAccount = viewModel.Account;
             var destAccount = await _context.Accounts.FindAsync(viewModel.ToAccountNumber);
@@ -116,22 +145,46 @@ namespace InternetBanking.Controllers
                 ModelState.AddModelError(nameof(srcAccount), "Unable to find account with id.");
             }
 
-            if(destAccount is null)
+            if (destAccount is null)
             {
                 ModelState.AddModelError(nameof(destAccount), "Unable to find account with id.");
             }
 
-            if(srcAccount.AccountNumber == destAccount.AccountNumber)
+            if (srcAccount.AccountNumber == destAccount.AccountNumber)
             {
                 ModelState.AddModelError(nameof(viewModel.ToAccountNumber), "Source and destination accounts cannot be the same.");
             }
 
-            if (!IsValidAmount(amt) || !ModelState.IsValid)
+            if (!IsValidAmount(amt))
             {
                 return View(viewModel);
             }
 
-            await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amt, viewModel.Comment);
+            try
+            {
+                await _transactionService.AddTransferTransactionAsync(srcAccount, destAccount, amt, viewModel.Comment).ConfigureAwait(false);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (AccountBalanceUpdateException)
+            {
+                ModelState.AddModelError(nameof(amount), "It appears you do not have enough funds in this account for this transaction.");
+            }
+            catch (AggregateException e)
+            {
+                if (e.InnerException is AccountBalanceUpdateException)
+                {
+                    ModelState.AddModelError(nameof(amount), "It appears you do not have enough funds in this account!");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Something went wrong and transfer was unsuccessful!");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
 
             return RedirectToAction(nameof(Index));
         }
