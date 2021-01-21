@@ -68,11 +68,11 @@ namespace InternetBanking.Controllers
 
             try
             {
-                await _transactionService.AddDepositTransactionAsync(account, amount).ConfigureAwait(false);
+                await _transactionService.AddDepositTransactionAsync(viewModel.Account, viewModel.Amount).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                ModelState.AddModelError(string.Empty, "Something went wrong and withdraw was unsuccessful");
+                ModelState.AddModelError(string.Empty, "Something went wrong and deposit was unsuccessful");
             }
 
             if (!ModelState.IsValid)

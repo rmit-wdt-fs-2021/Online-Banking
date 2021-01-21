@@ -75,7 +75,7 @@ namespace InternetBanking.Services
                 throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
             }
 
-            UpdateTransferAccountBalances(srcAccount, destAccount, amount);
+            UpdateTransferAccountBalances(srcAccount, destAccount, amount, comment);
 
             if (!srcAccount.HasFreeTransactions(freeTransactions))
             {
@@ -110,21 +110,23 @@ namespace InternetBanking.Services
             AddTransaction(account, TransactionType.ServiceCharge, serviceCharge);
         }
 
-        private void UpdateTransferAccountBalances(Account srcAccount, Account destAccount, decimal amount)
+        private void UpdateTransferAccountBalances(Account srcAccount, Account destAccount, decimal amount, string comment = null)
         {
             srcAccount.Balance -= amount;
-            AddTransaction(srcAccount, TransactionType.Transfer, amount);
+            AddTransaction(srcAccount, TransactionType.Transfer, amount, destAccount.AccountNumber, comment);
 
             destAccount.Balance += amount;
         }
 
-        private void AddTransaction(Account account, TransactionType type, decimal amt, string comment = null)
+        private void AddTransaction(Account account, TransactionType type, decimal amt, int? destNumber = null, string comment = null)
         {
             account.Transactions.Add(
                 new Transaction
                 {
                     TransactionType = type,
+                    AccountNumber = account.AccountNumber,
                     Amount = amt,
+                    DestinationAccountNumber = destNumber,
                     Comment = comment,
                     TransactionTimeUtc = DateTime.UtcNow
                 });
