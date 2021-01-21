@@ -1,3 +1,4 @@
+using InternetBanking.BackgroundServices;
 using InternetBanking.Data;
 using InternetBanking.Interfaces;
 using InternetBanking.Services;
@@ -40,6 +41,10 @@ namespace InternetBanking
             // Add business services.
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IAccountService, AccountService>();
+
+
+            // Add bill pay background service to automatically run in the background along-side the web-server.
+            services.AddHostedService<BillPayBackgroundService>();
 
             services.AddControllersWithViews();
         }
