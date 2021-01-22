@@ -6,8 +6,11 @@ namespace InternetBanking.ViewModels
 {
     public class BillPayViewModel
     {
+        [Required]
+        public Customer Customer { get; set; }
+
         [Display(Name = "From Account")]
-        public Account FromAccount { get; set; }
+        public int FromAccount { get; set; }
 
         [Required, Display(Name = "To Payee")]
         public string ToPayee { get; set; }
