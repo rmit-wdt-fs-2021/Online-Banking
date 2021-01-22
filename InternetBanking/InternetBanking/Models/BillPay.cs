@@ -17,7 +17,8 @@ namespace InternetBanking.Models
         public int BillPayID { get; init; }
 
         [Required]
-        public string Payee { get; init; }
+        public int PayeeID { get; init; }
+        public virtual Payee Payee { get; init; }
 
         [Required]
         [Column(TypeName = "decimal(18, 2)"), DataType(DataType.Currency)]
@@ -28,7 +29,7 @@ namespace InternetBanking.Models
         public DateTime ScheduledDate { get; init; }
 
         [Required]
-        public BillPeriod BillPeriod { get; init; } = BillPeriod.OnceOff;
+        public BillPeriod Period { get; init; } = BillPeriod.OnceOff;
 
         [Required]
         public DateTime ModifyDate { get; set; }
