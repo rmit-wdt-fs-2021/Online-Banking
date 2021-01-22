@@ -17,6 +17,11 @@ namespace InternetBanking.Models
         public int BillPayID { get; init; }
 
         [Required]
+        [ForeignKey("Account")]
+        public int AccountNumber { get; init; }
+        public virtual Account Account { get; init; }
+
+        [Required]
         public int PayeeID { get; init; }
         public virtual Payee Payee { get; init; }
 
@@ -32,6 +37,6 @@ namespace InternetBanking.Models
         public BillPeriod Period { get; init; } = BillPeriod.OnceOff;
 
         [Required]
-        public DateTime ModifyDate { get; set; }
+        public DateTime ModifyDate { get; set; } = DateTime.UtcNow;
     }
 }

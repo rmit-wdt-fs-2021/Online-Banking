@@ -23,7 +23,7 @@ namespace InternetBanking.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             var customer = await _context.Customers.FindAsync(CustomerID);
             var payees = await _context.Payees.ToListAsync();
@@ -35,9 +35,20 @@ namespace InternetBanking.Controllers
             });
         }
 
-        //public async Task<IActionResult> Create()
-        //{
+        public IActionResult Create() => View();
 
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("BillPayID,PayeeID,Amount,ScheduledDate,Period,ModifyDate")] BillPay billPay)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(billPay);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(billPay);
+        }
     }
 }
