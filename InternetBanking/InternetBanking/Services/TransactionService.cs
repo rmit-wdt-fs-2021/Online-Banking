@@ -116,6 +116,7 @@ namespace InternetBanking.Services
             AddTransaction(srcAccount, TransactionType.Transfer, amount, destAccount.AccountNumber, comment);
 
             destAccount.Balance += amount;
+            destAccount.ModifyDate = DateTime.UtcNow;
         }
 
         private void AddTransaction(Account account, TransactionType type, decimal amt, int? destNumber = null, string comment = null)
@@ -130,6 +131,7 @@ namespace InternetBanking.Services
                     Comment = comment,
                     TransactionTimeUtc = DateTime.UtcNow
                 });
+            account.ModifyDate = DateTime.UtcNow;
         }
 
         private bool IsValidDeductionAmount(Account account, decimal amount)
