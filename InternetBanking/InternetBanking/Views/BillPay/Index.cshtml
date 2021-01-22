@@ -18,6 +18,34 @@
                Selected = "select" == a.AccountNumber.ToString()
            }))
             </div>
+            <div class="form-group">
+                <label asp-for="ToPayee" class="control-label"></label>
+                @Html.DropDownList("To Payee", Model.Payees.Select(p => new SelectListItem
+           {
+               Value = p.PayeeID.ToString(),
+               Text = $"{p.PayeeName} -- {p.PayeeID}",
+               Selected = "select" == p.PayeeID.ToString()
+           }))
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduledDate" class="control-label"></label>
+                <input asp-for="ScheduledDate" class="form-control" />
+                <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Code referenced from : https://stackoverflow.com/questions/44797422/mvc-enum-dropdownlist/44797835*@
+                <label asp-for="Period" class="control-label"></label>
+                <select asp-for="Period" asp-items="@Html.GetEnumSelectList<BillPeriod>()"></select>
+                <span asp-validation-for="Period" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>

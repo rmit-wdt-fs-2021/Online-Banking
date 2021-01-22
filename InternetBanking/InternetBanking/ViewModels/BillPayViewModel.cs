@@ -1,5 +1,6 @@
 ﻿using InternetBanking.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace InternetBanking.ViewModels
@@ -18,10 +19,13 @@ namespace InternetBanking.ViewModels
         [Required]
         public decimal Amount { get; set; }
 
-        [Required , Display(Name = "Scheduled Date")]
-        public DateTime ScheduledDate { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Scheduled Date")]
+        public DateTime ScheduledDate { get; set; } = DateTime.Now;
 
         [Required]
-        public BillPeriod BillPeriod { get; set; }
+        public BillPeriod Period { get; set; }
+
+        public List<Payee> Payees { get; set; }
     }
 }

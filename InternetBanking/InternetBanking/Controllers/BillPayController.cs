@@ -4,6 +4,7 @@ using InternetBanking.Models;
 using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +26,18 @@ namespace InternetBanking.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var customer = await _context.Customers.FindAsync(CustomerID);
-
+            var payees = await _context.Payees.ToListAsync();
+            
             return View(new BillPayViewModel
             {
-                Customer = customer
+                Customer = customer,
+                Payees = payees
             });
         }
+
+        //public async Task<IActionResult> Create()
+        //{
+
+        //}
     }
 }
