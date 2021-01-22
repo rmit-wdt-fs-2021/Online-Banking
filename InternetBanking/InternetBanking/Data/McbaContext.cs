@@ -12,6 +12,7 @@ namespace InternetBanking.Data
         public DbSet<Login> Logins { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Payee> Payees { get; set; }
         public DbSet<BillPay> BillPay { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

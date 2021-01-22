@@ -9,6 +9,7 @@ namespace InternetBanking.Models
         [Display(Name = "Login ID")]
         public string LoginID { get; set; }
 
+        [Required]
         public int CustomerID { get; set; }
         public virtual Customer Customer { get; set; }
 

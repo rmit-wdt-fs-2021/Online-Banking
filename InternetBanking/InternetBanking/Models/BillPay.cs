@@ -6,12 +6,14 @@ namespace InternetBanking.Models
 {
     public enum BillPeriod
     {
-        OneTime,
-        Annual
+        OnceOff,
+        Monthly,
+        Quarterly
     }
 
     public record BillPay
     {
+        [Required]
         public int BillPayID { get; init; }
 
         [Required]
@@ -25,6 +27,10 @@ namespace InternetBanking.Models
         [DataType(DataType.Date), Display(Name = "Scheduled Date")]
         public DateTime ScheduledDate { get; init; }
 
-        public BillPeriod BillPeriod { get; init; } = BillPeriod.OneTime;
+        [Required]
+        public BillPeriod BillPeriod { get; init; } = BillPeriod.OnceOff;
+
+        [Required]
+        public DateTime ModifyDate { get; set; }
     }
 }
