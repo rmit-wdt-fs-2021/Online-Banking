@@ -183,7 +183,7 @@ namespace InternetBanking.Data
                 },
                 new Payee
                 {
-                    PayeeName = "Telstra",
+                    PayeeName = "RMIT",
                     Phone = "+61 2222 9333"
                 });
 
