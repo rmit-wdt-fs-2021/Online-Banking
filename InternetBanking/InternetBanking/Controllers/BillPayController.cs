@@ -61,5 +61,14 @@ namespace InternetBanking.Controllers
 
             return View(billPay);
         }
+
+        public async Task<IActionResult> DisplayBillPays()
+        {
+            var billPays = await _context.BillPay.ToListAsync();
+            return View(new BillPayListViewModel
+            {
+                BillPays = billPays
+            });
+        }
     }
 }

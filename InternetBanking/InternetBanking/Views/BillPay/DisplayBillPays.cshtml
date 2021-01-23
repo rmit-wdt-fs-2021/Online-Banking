@@ -1,0 +1,36 @@
+﻿@model InternetBanking.ViewModels.BillPayListViewModel
+@{
+    ViewData["Title"] = "Bill Pay Information";
+}
+
+<h3>Your bill pay information</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Payee</th>
+        <th>Amount</th>
+        <th>Scheduled Date</th>
+        <th>Period</th>
+    </tr>
+
+    @foreach(var billPay in Model.BillPays)
+    {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@billPay.BillPayID">Modify</a>
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.PayeeID)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.ScheduledDate)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.Period)
+            </td>
+        </tr>
+    }
+</table>

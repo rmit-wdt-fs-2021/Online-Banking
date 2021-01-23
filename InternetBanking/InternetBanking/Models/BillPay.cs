@@ -6,7 +6,7 @@ namespace InternetBanking.Models
 {
     public enum BillPeriod
     {
-        OnceOff,
+        OnceOff = 1,
         Monthly,
         Quarterly
     }
