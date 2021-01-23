@@ -22,5 +22,10 @@ namespace InternetBanking.Services
         {
             return await _context.Accounts.ToListAsync();
         }
+
+        public async Task<Account> GetAccountAsync(int accountNumber)
+        {
+            return await _context.Accounts.FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+        }
     }
 }

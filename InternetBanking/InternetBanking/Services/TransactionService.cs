@@ -34,6 +34,24 @@ namespace InternetBanking.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddBillPayTransaction(Account account, decimal amount)
+        {
+            if (account is null)
+            {
+                throw new ArgumentNullException($"{nameof(account)} cannot be null.");
+            }
+
+            if (!IsValidDeductionAmount(account, amount))
+            {
+                throw new AccountBalanceUpdateException($"Unable to update account by {nameof(amount)}");
+            }
+
+            account.Balance -= amount;
+            AddTransaction(account, TransactionType.BillPay, amount);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddWithdrawTransactionAsync(Account account, decimal amount)
         {
 

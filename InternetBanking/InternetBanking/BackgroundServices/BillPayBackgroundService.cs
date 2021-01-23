@@ -1,4 +1,7 @@
 ﻿using InternetBanking.Data;
+using InternetBanking.Interfaces;
+using InternetBanking.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,11 +16,16 @@ namespace InternetBanking.BackgroundServices
     public class BillPayBackgroundService : BackgroundService
     {
         private readonly IServiceProvider _services;
+        private readonly IAccountService _accountService;
+        private readonly ITransactionService _transactionService;
         private readonly ILogger<BillPayBackgroundService> _logger;
 
-        public BillPayBackgroundService(IServiceProvider services, ILogger<BillPayBackgroundService> logger)
+        public BillPayBackgroundService(IServiceProvider services, ILogger<BillPayBackgroundService> logger,
+                                        IAccountService accountService, ITransactionService transactionService)
         {
             _services = services;
+            _accountService = accountService;
+            _transactionService = transactionService;
             _logger = logger;
         }
 
@@ -35,14 +43,83 @@ namespace InternetBanking.BackgroundServices
             }
         }
 
-        private Task DoWork(CancellationToken cancellationToken)
+        private async Task DoWork(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Bill pay service is working");
 
             using var scope = _services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<McbaContext>();
 
-            return null;
+            var billPays = await context.BillPay.ToListAsync(cancellationToken);
+            foreach (var billPay in billPays)
+            {
+                if (IsTimeToProcessBill(billPay.ScheduledDate))
+                {
+                    await ProcessBillAsync(billPay).ConfigureAwait(false);
+                }
+            }
+
+        }
+
+        private async Task ProcessBillAsync(BillPay billPay)
+        {
+            var accountToBeCharged = await _accountService.GetAccountAsync(billPay.AccountNumber);
+
+            if(accountToBeCharged is null)
+            {
+                _logger.LogError($"Unable to find account with {billPay.AccountNumber}");
+                return;
+            }
+
+            if(ValidateBillAmount(accountToBeCharged, billPay.Amount))
+            {
+                await _transactionService.AddBillPayTransaction(accountToBeCharged, billPay.Amount).ConfigureAwait(false);
+                _logger.LogInformation("Bill Pay service is work complete.");
+            }
+            else
+            {
+                _logger.LogInformation($"Customer does not have enough balance in Account : {accountToBeCharged.AccountNumber}");
+                return;
+            }
+        }
+
+        // TODO
+        private void UpdateBillPay(BillPay billPay)
+        {
+            if(billPay.Period == BillPeriod.OnceOff)
+            {
+
+            }
+        }
+
+        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow == ScheduledDate;
+
+        private bool ValidateBillAmount(Account account, decimal amount)
+        {
+            const int minCheckingBalance = 200;
+            const int minSavingsBalance = 0;
+            bool retVal = true;
+            if (account.AccountType == AccountType.Checking)
+            {
+                if (account.Balance - amount < minCheckingBalance)
+                {
+                    retVal = false;
+                }
+            }
+            else if (account.AccountType == AccountType.Saving)
+            {
+                if (account.Balance - amount < minSavingsBalance)
+                {
+                    retVal = false;
+                }
+            }
+
+            if(amount < 0)
+            {
+                retVal = false;
+            }
+
+            return retVal;
         }
     }
 }

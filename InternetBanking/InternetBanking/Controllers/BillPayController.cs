@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +26,7 @@ namespace InternetBanking.Controllers
         {
             var customer = await _context.Customers.FindAsync(CustomerID);
             var payees = await _context.Payees.ToListAsync();
-            
+
             return View(new BillPayViewModel
             {
                 Customer = customer,
@@ -73,13 +72,13 @@ namespace InternetBanking.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if(id is null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var billPay = await _context.BillPay.FindAsync(id);
-            if(billPay is null)
+            if (billPay is null)
             {
                 return NotFound();
             }
@@ -99,13 +98,15 @@ namespace InternetBanking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, BillPayViewModel viewModel)
         {
-            if(id != viewModel.BillPayID)
+            if (id != viewModel.BillPayID)
             {
                 return NotFound();
             }
 
             var billPay = await _context.BillPay.AsNoTracking().FirstOrDefaultAsync(x => x.BillPayID == id);
-            billPay.AccountNumber = viewModel.FromAccountNumber;
+
+            billPay = UpdateProperties(billPay, viewModel);
+
             if (ModelState.IsValid)
             {
                 try
@@ -121,15 +122,45 @@ namespace InternetBanking.Controllers
                     }
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(DisplayBillPays));
             }
 
-            return View(viewModel);
+            return RedirectToAction(nameof(DisplayBillPays));
+        }
+
+        private BillPay UpdateProperties(BillPay billPay, BillPayViewModel viewModel)
+        {
+            if (billPay.AccountNumber != viewModel.FromAccountNumber)
+            {
+                billPay = billPay with { AccountNumber = viewModel.FromAccountNumber };
+            }
+
+            if (billPay.PayeeID != viewModel.ToPayeeID)
+            {
+                billPay = billPay with { PayeeID = viewModel.ToPayeeID };
+            }
+
+            if (billPay.Amount != viewModel.Amount)
+            {
+                billPay = billPay with { Amount = viewModel.Amount };
+            }
+
+            if (billPay.ScheduledDate != viewModel.ScheduledDate)
+            {
+                billPay = billPay with { ScheduledDate = viewModel.ScheduledDate };
+            }
+
+            if (billPay.Period != viewModel.Period)
+            {
+                billPay = billPay with { Period = viewModel.Period };
+            }
+
+            return billPay;
         }
 
         private bool BillPayExists(int id) => _context.BillPay.Any(e => e.BillPayID == id);
 
-        private BillPay CreateBillPay(BillPayViewModel viewModel)
+        private static BillPay CreateBillPay(BillPayViewModel viewModel)
         {
             return new BillPay
             {
