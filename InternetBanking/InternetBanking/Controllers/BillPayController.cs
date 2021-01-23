@@ -70,5 +70,77 @@ namespace InternetBanking.Controllers
                 BillPays = billPays
             });
         }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if(id is null)
+            {
+                return NotFound();
+            }
+
+            var billPay = await _context.BillPay.FindAsync(id);
+            if(billPay is null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers.FindAsync(CustomerID);
+            var payees = await _context.Payees.ToListAsync();
+            return View(new BillPayViewModel
+            {
+                Customer = customer,
+                Payees = payees,
+                Amount = billPay.Amount,
+                BillPayID = billPay.BillPayID
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, BillPayViewModel viewModel)
+        {
+            if(id != viewModel.BillPayID)
+            {
+                return NotFound();
+            }
+
+            var billPay = await _context.BillPay.AsNoTracking().FirstOrDefaultAsync(x => x.BillPayID == id);
+            billPay.AccountNumber = viewModel.FromAccountNumber;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(billPay);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BillPayExists(billPay.BillPayID))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(viewModel);
+        }
+
+        private bool BillPayExists(int id) => _context.BillPay.Any(e => e.BillPayID == id);
+
+        private BillPay CreateBillPay(BillPayViewModel viewModel)
+        {
+            return new BillPay
+            {
+                BillPayID = viewModel.BillPayID,
+                PayeeID = viewModel.ToPayeeID,
+                AccountNumber = viewModel.FromAccountNumber,
+                Amount = viewModel.Amount,
+                ScheduledDate = viewModel.ScheduledDate,
+                Period = viewModel.Period,
+                ModifyDate = DateTime.UtcNow
+            };
+        }
     }
 }

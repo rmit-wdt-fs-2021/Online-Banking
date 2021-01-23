@@ -7,6 +7,7 @@ namespace InternetBanking.ViewModels
 {
     public class BillPayViewModel
     {
+        public int BillPayID { get; set; }
         public Customer Customer { get; set; }
 
         [Display(Name = "From Account")]
