@@ -7,14 +7,13 @@ namespace InternetBanking.ViewModels
 {
     public class BillPayViewModel
     {
-        [Required]
         public Customer Customer { get; set; }
 
         [Display(Name = "From Account")]
-        public int FromAccount { get; set; }
+        public int FromAccountNumber { get; set; }
 
         [Required, Display(Name = "To Payee")]
-        public string ToPayee { get; set; }
+        public int ToPayeeID { get; set; }
 
         [Required]
         public decimal Amount { get; set; }

@@ -39,8 +39,19 @@ namespace InternetBanking.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BillPayID,PayeeID,Amount,ScheduledDate,Period,ModifyDate")] BillPay billPay)
+        public async Task<IActionResult> Create(BillPayViewModel viewModel)
         {
+            var customer = await _context.Customers.FindAsync(CustomerID);
+            viewModel.Customer = customer;
+            var billPay = new BillPay
+            {
+                PayeeID = viewModel.ToPayeeID,
+                AccountNumber = viewModel.FromAccountNumber,
+                Amount = viewModel.Amount,
+                ScheduledDate = viewModel.ScheduledDate,
+                Period = viewModel.Period,
+                ModifyDate = DateTime.UtcNow
+            };
             if (ModelState.IsValid)
             {
                 _context.Add(billPay);
