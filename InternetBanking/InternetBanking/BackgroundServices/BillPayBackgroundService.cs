@@ -6,8 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,16 +14,15 @@ namespace InternetBanking.BackgroundServices
     public class BillPayBackgroundService : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly IAccountService _accountService;
-        private readonly ITransactionService _transactionService;
+        private IAccountService _accountService;
+        private ITransactionService _transactionService;
         private readonly ILogger<BillPayBackgroundService> _logger;
 
-        public BillPayBackgroundService(IServiceProvider services, ILogger<BillPayBackgroundService> logger,
-                                        IAccountService accountService, ITransactionService transactionService)
+        public BillPayBackgroundService(IServiceProvider services, ILogger<BillPayBackgroundService> logger)
         {
             _services = services;
-            _accountService = accountService;
-            _transactionService = transactionService;
+            //_accountService = accountService;
+            //_transactionService = transactionService;
             _logger = logger;
         }
 
@@ -49,6 +46,8 @@ namespace InternetBanking.BackgroundServices
 
             using var scope = _services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<McbaContext>();
+            _transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
+            _accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
 
             var billPays = await context.BillPay.ToListAsync(cancellationToken);
             foreach (var billPay in billPays)
@@ -65,13 +64,13 @@ namespace InternetBanking.BackgroundServices
         {
             var accountToBeCharged = await _accountService.GetAccountAsync(billPay.AccountNumber);
 
-            if(accountToBeCharged is null)
+            if (accountToBeCharged is null)
             {
                 _logger.LogError($"Unable to find account with {billPay.AccountNumber}");
                 return;
             }
 
-            if(ValidateBillAmount(accountToBeCharged, billPay.Amount))
+            if (ValidateBillAmount(accountToBeCharged, billPay.Amount))
             {
                 await _transactionService.AddBillPayTransaction(accountToBeCharged, billPay.Amount).ConfigureAwait(false);
                 _logger.LogInformation("Bill Pay service is work complete.");
@@ -86,13 +85,13 @@ namespace InternetBanking.BackgroundServices
         // TODO
         private void UpdateBillPay(BillPay billPay)
         {
-            if(billPay.Period == BillPeriod.OnceOff)
+            if (billPay.Period == BillPeriod.OnceOff)
             {
 
             }
         }
 
-        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow == ScheduledDate;
+        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow.Date == ScheduledDate.Date;
 
         private bool ValidateBillAmount(Account account, decimal amount)
         {
@@ -114,7 +113,7 @@ namespace InternetBanking.BackgroundServices
                 }
             }
 
-            if(amount < 0)
+            if (amount < 0)
             {
                 retVal = false;
             }
