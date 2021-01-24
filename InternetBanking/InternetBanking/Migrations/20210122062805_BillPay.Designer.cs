@@ -4,14 +4,16 @@ using InternetBanking.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InternetBanking.Migrations
 {
     [DbContext(typeof(McbaContext))]
-    partial class McbaContextModelSnapshot : ModelSnapshot
+    [Migration("20210122062805_BillPay")]
+    partial class BillPay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +54,6 @@ namespace InternetBanking.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("AccountNumber")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
@@ -71,8 +70,6 @@ namespace InternetBanking.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("BillPayID");
-
-                    b.HasIndex("AccountNumber");
 
                     b.HasIndex("PayeeID");
 
@@ -234,19 +231,11 @@ namespace InternetBanking.Migrations
 
             modelBuilder.Entity("InternetBanking.Models.BillPay", b =>
                 {
-                    b.HasOne("InternetBanking.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountNumber")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("InternetBanking.Models.Payee", "Payee")
                         .WithMany()
                         .HasForeignKey("PayeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Account");
 
                     b.Navigation("Payee");
                 });

@@ -8,6 +8,7 @@ namespace InternetBanking.Interfaces
 {
     public interface IAccountService
     {
+        Task<Account> GetAccountAsync(int accountNumber);
         public Task<List<Account>> GetAllAccountsAsync();
     }
 }

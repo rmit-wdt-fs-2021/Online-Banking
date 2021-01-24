@@ -1,0 +1,62 @@
+﻿@model InternetBanking.ViewModels.BillPayViewModel
+@{
+    ViewData["Title"] = "Schedule Bill Pay";
+}
+
+<h1>Schedule Bill Pay - @Model.Customer.Name</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FromAccountNumber" class="control-label"></label>
+                <br />
+                @Html.DropDownListFor(m => m.FromAccountNumber, Model.Customer.Accounts.Select(a => new SelectListItem
+           {
+               Value = a.AccountNumber.ToString(),
+               Text = a.AccountNumber.ToString() + " -- " + a.AccountType.ToString(),
+               Selected = "select" == a.AccountNumber.ToString()
+           }))
+            </div>
+            <div class="form-group">
+                <label asp-for="ToPayeeID" class="control-label"></label>
+                <br />
+                @Html.DropDownListFor(m => m.ToPayeeID, Model.Payees.Select(p => new SelectListItem
+           {
+               Value = p.PayeeID.ToString(),
+               Text = $"{p.PayeeName} -- {p.PayeeID}",
+               Selected = "select" == p.PayeeID.ToString()
+           }))
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduledDate" class="control-label"></label>
+                <input asp-for="ScheduledDate" class="form-control" />
+                <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Code referenced from : https://stackoverflow.com/questions/44797422/mvc-enum-dropdownlist/44797835*@
+                <label asp-for="Period" class="control-label"></label>
+                <br />
+                <select asp-for="Period" asp-items="@Html.GetEnumSelectList<BillPeriod>()"></select>
+                <span asp-validation-for="Period" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,18 +7,31 @@ namespace InternetBanking.Models
 {
     public enum TransactionType
     {
+        [Description("Credit (Deposit Money)")]
         Deposit = 1,
-        Withdraw = 2,
-        Transfer = 3,
-        ServiceCharge = 4
+
+        [Description("Debit (Withdrawal)")]
+        Withdraw,
+
+        [Description("Debit (Transfer)")]
+        Transfer,
+
+        [Description("Debit (Service Charge)")]
+        ServiceCharge,
+
+        [Description("Debit (BillPay)")]
+        BillPay
     }
 
     public class Transaction
     {
+        [Required]
         public int TransactionID { get; set; }
 
+        [Required]
         public TransactionType TransactionType { get; set; }
 
+        [Required]
         [ForeignKey("Account")]
         public int AccountNumber { get; set; }
         public virtual Account Account { get; set; }

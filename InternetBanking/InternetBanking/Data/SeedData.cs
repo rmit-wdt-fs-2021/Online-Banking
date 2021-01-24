@@ -175,6 +175,18 @@ namespace InternetBanking.Data
                     TransactionTimeUtc = DateTime.ParseExact("08/06/2020 10:00:00 PM", format, null)
                 });
 
+            context.Payees.AddRange(
+                new Payee
+                {
+                    PayeeName = "Telstra",
+                    Phone = "+61 2222 3333"
+                },
+                new Payee
+                {
+                    PayeeName = "RMIT",
+                    Phone = "+61 2222 9333"
+                });
+
             context.SaveChanges();
         }
     }
