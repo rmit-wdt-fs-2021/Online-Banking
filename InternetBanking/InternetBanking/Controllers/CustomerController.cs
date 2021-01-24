@@ -142,17 +142,20 @@ namespace InternetBanking.Controllers
 
             if (srcAccount is null)
             {
-                ModelState.AddModelError(nameof(srcAccount), "Unable to find account with id.");
+                ModelState.AddModelError(string.Empty, "Unable to find account with id.");
+                return View(viewModel);
             }
 
             if (destAccount is null)
             {
-                ModelState.AddModelError(nameof(destAccount), "Unable to find account with id.");
+                ModelState.AddModelError(nameof(toAccountNumber), "Unable to find account with id.");
+                return View(viewModel);
             }
 
             if (srcAccount.AccountNumber == destAccount.AccountNumber)
             {
-                ModelState.AddModelError(nameof(viewModel.ToAccountNumber), "Source and destination accounts cannot be the same.");
+                ModelState.AddModelError(string.Empty, "Source and destination accounts cannot be the same.");
+                return View(viewModel);
             }
 
             if (!IsValidAmount(amt))
