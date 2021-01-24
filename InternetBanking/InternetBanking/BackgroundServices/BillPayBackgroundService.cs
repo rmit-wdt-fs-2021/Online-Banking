@@ -21,8 +21,6 @@ namespace InternetBanking.BackgroundServices
         public BillPayBackgroundService(IServiceProvider services, ILogger<BillPayBackgroundService> logger)
         {
             _services = services;
-            //_accountService = accountService;
-            //_transactionService = transactionService;
             _logger = logger;
         }
 
