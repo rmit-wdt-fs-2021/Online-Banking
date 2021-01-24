@@ -1,0 +1,52 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Core.Common
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@model IPagedList<Transaction>
+
+
+@{
+    ViewData["Title"] = "View Transactions";
+    var account = (Account)ViewBag.Account;
+}
+
+<h1>Transactions for @account.AccountNumber</h1>
+<div>
+    <h1>Orders for @account.AccountNumber: @account.AccountType</h1>
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionID)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.Amount)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.Comment)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionType)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionTimeUtc)</th>
+        </tr>
+
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
+                @if (transaction.TransactionType == TransactionType.Withdraw || transaction.TransactionType == TransactionType.ServiceCharge
+                     || (transaction.TransactionType == TransactionType.Transfer && transaction.DestinationAccountNumber != account.AccountNumber))
+                {
+                    <td>-$@Html.DisplayFor(x => transaction.Amount)</td>
+                }
+                else
+                {
+                    <td>$@Html.DisplayFor(x => transaction.Amount)</td>
+                }
+                <td>@Html.DisplayFor(x => transaction.Comment)</td>
+                <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
+                <td>@Html.DisplayFor(x => transaction.TransactionTimeUtc)</td>
+            </tr>
+        }
+    </table>
+
+    @Html.PagedListPager(Model, page => Url.Action("ViewTransactions", new { page }),
+        new PagedListRenderOptions
+        {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
+</div>
+

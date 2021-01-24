@@ -22,6 +22,9 @@
         <td>@Html.DisplayFor(x => account.Balance)</td>
         <td>
             <a class="btn btn-primary"
+                asp-controller="MyStatements" asp-action="IndexToViewTransactions" asp-route-accountNumber="@account.AccountNumber">View My Statements</a>
+
+            <a class="btn btn-primary"
                asp-action="Deposit" asp-route-accountNumber="@account.AccountNumber">Deposit</a>
 
             <a class="btn btn-primary"
