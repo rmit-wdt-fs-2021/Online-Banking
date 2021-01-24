@@ -29,14 +29,14 @@ namespace InternetBanking.BackgroundServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Bill pay service is running");
-
+            const int waitTime = 1;
             while (!cancellationToken.IsCancellationRequested)
             {
                 await DoWork(cancellationToken);
 
                 _logger.LogInformation("Bill pay service is waiting a minute");
 
-                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                await Task.Delay(TimeSpan.FromMinutes(waitTime), cancellationToken);
             }
         }
 
@@ -45,7 +45,7 @@ namespace InternetBanking.BackgroundServices
             _logger.LogInformation("Bill pay service is working");
 
             using var scope = _services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<McbaContext>();
+            McbaContext context = scope.ServiceProvider.GetRequiredService<McbaContext>();
             _transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
             _accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
 
@@ -55,6 +55,7 @@ namespace InternetBanking.BackgroundServices
                 if (IsTimeToProcessBill(billPay.ScheduledDate))
                 {
                     await ProcessBillAsync(billPay).ConfigureAwait(false);
+                    await UpdateBillPayAsync(billPay, context).ConfigureAwait(false);
                 }
             }
 
@@ -82,12 +83,13 @@ namespace InternetBanking.BackgroundServices
             }
         }
 
-        // TODO
-        private void UpdateBillPay(BillPay billPay)
+        private async Task UpdateBillPayAsync(BillPay billPay, McbaContext context)
         {
             if (billPay.Period == BillPeriod.OnceOff)
             {
-
+                context.BillPay.Remove(billPay);
+                await context.SaveChangesAsync();
+                _logger.LogInformation($"Bill pay : {billPay.BillPayID} has been processed and deleted.");
             }
         }
 
