@@ -54,14 +54,13 @@ namespace InternetBanking.BackgroundServices
             {
                 if (IsTimeToProcessBill(billPay.ScheduledDate))
                 {
-                    await ProcessBillAsync(billPay).ConfigureAwait(false);
-                    await UpdateBillPayAsync(billPay, context).ConfigureAwait(false);
+                    await ProcessBillAsync(billPay, context).ConfigureAwait(false);
                 }
             }
 
         }
 
-        private async Task ProcessBillAsync(BillPay billPay)
+        private async Task ProcessBillAsync(BillPay billPay, McbaContext context)
         {
             var accountToBeCharged = await _accountService.GetAccountAsync(billPay.AccountNumber);
 
@@ -75,6 +74,7 @@ namespace InternetBanking.BackgroundServices
             {
                 await _transactionService.AddBillPayTransaction(accountToBeCharged, billPay.Amount).ConfigureAwait(false);
                 _logger.LogInformation("Bill Pay service is work complete.");
+                await UpdateBillPayAsync(billPay, context).ConfigureAwait(false);
             }
             else
             {
