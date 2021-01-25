@@ -20,7 +20,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav">
                         @{
-                            var isLoggedIn = Context.Session.GetInt32(nameof(Admin.Username)).HasValue;
+                            var isLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString(nameof(Admin.Username)));
                         }
                         @if (isLoggedIn)
                         {
