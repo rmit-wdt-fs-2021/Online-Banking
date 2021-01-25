@@ -1,32 +1,34 @@
-﻿using AdminApi.Models.Repository;
+﻿using AdminApi.Data;
+using AdminApi.Models.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace AdminApi.Models.DataManager
 {
-    public class DataRepository<TEntity, TKey> : IDataRepository<TEntity, TKey> where TEntity : class
+    public abstract class DataRepository<TEntity, TKey> : IDataRepository<TEntity, TKey> where TEntity : class
     {
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        protected readonly McbaContext _context;
+
+        public DataRepository(McbaContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public IEnumerable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().Where(predicate);
         }
 
         public TEntity Get(TKey id)
         {
-            throw new NotImplementedException();
+            return _context.Set<TEntity>().Find(id);
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            throw new NotImplementedException();
-        }
-
-        public TKey Update(TKey id, TEntity item)
-        {
-            throw new NotImplementedException();
+            return _context.Set<TEntity>().ToList();
         }
     }
 }

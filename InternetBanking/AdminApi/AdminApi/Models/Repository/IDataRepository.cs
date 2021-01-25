@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace AdminApi.Models.Repository
 {
+    /// <summary>
+    /// Code referenced from Matthew Bolger's Tut/Lab 09.
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
     public interface IDataRepository<TEntity, TKey> where TEntity : class
     {
-        // What do u want to do to database?
-        
-        //IEnumerable<Transaction> GetTransactions(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null);
-
-        TKey Update(TKey id, TEntity item);
         IEnumerable<TEntity> GetAll();
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> predicate);
         TEntity Get(TKey id);
 
     }
