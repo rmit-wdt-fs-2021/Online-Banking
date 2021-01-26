@@ -21,7 +21,7 @@ namespace AdminApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return null;
+            return View();
         }
     }
 }
