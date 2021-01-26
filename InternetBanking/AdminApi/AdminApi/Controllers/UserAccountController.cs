@@ -16,10 +16,10 @@ namespace AdminApi.Controllers
         }
 
         // PUT api/userAccount
-        [HttpPut]
-        public async Task LockAccountAsync(string loginID)
+        [HttpPut("{id}")]
+        public async Task LockAccountAsync(string id)
         {
-            await _repo.LockAccountAsync(loginID);
+            await _repo.LockAccountAsync(id);
         }
     }
 }

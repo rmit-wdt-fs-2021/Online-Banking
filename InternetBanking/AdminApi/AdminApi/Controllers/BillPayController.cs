@@ -15,16 +15,16 @@ namespace AdminApi.Controllers
             _repo = repo;
         }
 
-        [HttpPut]
-        public async Task BlockBillPayAsync(int billPayId)
+        [HttpPut("{id}")]
+        public async Task BlockBillPayAsync(int id)
         {
-            await _repo.BlockBillPayAsync(billPayId).ConfigureAwait(false);
+            await _repo.BlockBillPayAsync(id).ConfigureAwait(false);
         }
 
-        [HttpPut]
-        public async Task UnblockBillPayAsync(int billPayId)
+        [HttpPut("{id}")]
+        public async Task UnblockBillPayAsync(int id)
         {
-            await _repo.UnblockBillPayAsync(billPayId).ConfigureAwait(false);
+            await _repo.UnblockBillPayAsync(id).ConfigureAwait(false);
         }
     }
 }
