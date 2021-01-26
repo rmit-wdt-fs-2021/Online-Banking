@@ -36,6 +36,7 @@ namespace AdminApi
             services.AddScoped<TransactionManager>();
             services.AddScoped<BillPayManager>();
             services.AddScoped<UserAccountManager>();
+            services.AddScoped<CustomerManager>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
