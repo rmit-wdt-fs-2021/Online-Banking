@@ -7,6 +7,11 @@ using System.Linq.Expressions;
 
 namespace AdminApi.Models.DataManager
 {
+    /// <summary>
+    /// Code referenced from Programming With Most 2015 https://www.youtube.com/watch?v=rtXpYpZdOzM
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
     public abstract class DataRepository<TEntity, TKey> : IDataRepository<TEntity, TKey> where TEntity : class
     {
         protected readonly McbaContext _context;
