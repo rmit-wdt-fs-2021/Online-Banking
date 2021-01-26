@@ -17,9 +17,10 @@ namespace AdminApi.Controllers
             _repo = repo;
         }
 
-        public IEnumerable<Transaction> GetTransactions(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null)
+        [HttpGet("{id}")]
+        public IEnumerable<Transaction> GetTransactions(int id, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            return _repo.GetTransactions(accountNumber, fromDate, toDate);
+            return _repo.GetTransactions(id, fromDate, toDate);
         }
     }
 }

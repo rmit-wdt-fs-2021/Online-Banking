@@ -13,26 +13,12 @@ namespace AdminApi.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly TransactionManager _repo;
 
-        public AdminController(TransactionManager repo)
+        // GET: api/admin
+        [HttpGet]
+        public string Get()
         {
-            _repo = repo;
-        }
-
-        public IEnumerable<Transaction> GetTransactions(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null)
-        {
-            return null;
-        }
-
-        public void LockAccount(int accountNumber, int unlockwaitTimeInMinutes = 1)
-        {
-
-        }
-
-        public void blockScheduledPay(int billPayID)
-        {
-
+            return "Welcome to the admin portal";
         }
     }
 }
