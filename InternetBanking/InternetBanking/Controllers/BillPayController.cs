@@ -42,15 +42,7 @@ namespace InternetBanking.Controllers
         {
             var customer = await _context.Customers.FindAsync(CustomerID);
             viewModel.Customer = customer;
-            var billPay = new BillPay
-            {
-                PayeeID = viewModel.ToPayeeID,
-                AccountNumber = viewModel.FromAccountNumber,
-                Amount = viewModel.Amount,
-                ScheduledDate = viewModel.ScheduledDate,
-                Period = viewModel.Period,
-                ModifyDate = DateTime.UtcNow
-            };
+            var billPay = CreateBillPay(viewModel);
             if (ModelState.IsValid)
             {
                 _context.Add(billPay);
@@ -170,6 +162,7 @@ namespace InternetBanking.Controllers
                 Amount = viewModel.Amount,
                 ScheduledDate = viewModel.ScheduledDate,
                 Period = viewModel.Period,
+                IsBlocked = false,
                 ModifyDate = DateTime.UtcNow
             };
         }
