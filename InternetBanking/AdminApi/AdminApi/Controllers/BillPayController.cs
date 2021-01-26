@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AdminApi.Models.DataManager;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdminApi.Controllers
@@ -11,5 +8,23 @@ namespace AdminApi.Controllers
     [ApiController]
     public class BillPayController : ControllerBase
     {
+        private readonly BillPayManager _repo;
+
+        public BillPayController(BillPayManager repo)
+        {
+            _repo = repo;
+        }
+
+        [HttpPut]
+        public async Task BlockBillPayAsync(int billPayId)
+        {
+            await _repo.BlockBillPayAsync(billPayId).ConfigureAwait(false);
+        }
+
+        [HttpPut]
+        public async Task UnblockBillPayAsync(int billPayId)
+        {
+            await _repo.UnblockBillPayAsync(billPayId).ConfigureAwait(false);
+        }
     }
 }
