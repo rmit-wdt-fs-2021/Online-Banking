@@ -17,6 +17,6 @@ namespace AdminApp.ViewModels
         [Display(Name = "To Date")]
         public DateTime? ToDate { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
+        //public List<Transaction> Transactions { get; set; }
     }
 }
