@@ -54,7 +54,6 @@ namespace AdminApp.Services
                 transactionResponse = await Client.GetAsync($"{baseUri}/{id}");
 
             }
-           // transactionResponse = await Client.GetAsync($"{baseUri}/{id}/{fromDate.ToString()}/{toDate.ToString()}");
 
             if (!transactionResponse.IsSuccessStatusCode)
             {
