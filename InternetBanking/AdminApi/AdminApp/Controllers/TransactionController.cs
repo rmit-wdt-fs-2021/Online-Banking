@@ -19,13 +19,15 @@ namespace AdminApp.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly ITransactionService _transactionService;
+        private readonly IAccountService _accountService;
         private readonly ILogger<TransactionController> _logger;
 
         public TransactionController(ICustomerService customerService, ITransactionService transactionService,
-                                     ILogger<TransactionController> logger)
+                                     IAccountService accountService, ILogger<TransactionController> logger)
         {
             _customerService = customerService;
             _transactionService = transactionService;
+            _accountService = accountService;
             _logger = logger;
         }
         
@@ -41,13 +43,30 @@ namespace AdminApp.Controllers
             }
             else
             {
-                var customer = await _customerService.GetCustomerAsync(viewModel.CustomerID);
-                var transactions = await _transactionService.GetCustomerTransactionsAsync(customer);
+               // var customer = await _customerService.GetCustomerAsync(viewModel.CustomerID);
+                var accounts = await _accountService.GetAccountsFromCustomerAsync(viewModel.CustomerID);
+                var transactions = await GetTransactionsAsync(accounts, viewModel.FromDate, viewModel.ToDate).ConfigureAwait(false);
                 return View(new TransactionViewModel
                 {
                     Transactions = transactions
                 });
             }
+        }
+
+
+        private async Task<List<Transaction>> GetTransactionsAsync(List<Account> accounts, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var transactions = new List<Transaction>();
+            foreach (var account in accounts)
+            {
+                if(account != null)
+                {
+                    var transactionList = await _transactionService.GetTransactionsAsync(account.AccountNumber, fromDate, toDate).ConfigureAwait(false);
+                    transactions.AddRange(transactionList);
+                }
+            }
+
+            return transactions;
         }
 
         [HttpGet]

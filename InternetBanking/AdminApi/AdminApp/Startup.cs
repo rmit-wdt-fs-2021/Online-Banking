@@ -45,6 +45,7 @@ namespace AdminApp
             // Add business services
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             services.AddControllersWithViews();
         }
