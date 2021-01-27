@@ -4,22 +4,27 @@ using System.Threading.Tasks;
 
 namespace AdminApi.Models.DataManager
 {
-    public class UserAccountManager : DataRepository<Login, string>, IUserAccountRepository
+    public class UserAccountManager : DataRepository<Login, int>, IUserAccountRepository
     {
         public UserAccountManager(McbaContext context) : base(context) 
         { }
 
-        public async Task LockAccountAsync(string loginID)
+        public async Task LockAccountAsync(int customerId)
         {
-            var login = Get(loginID);
+            var login = Get(customerId);
+            if(login.IsLocked.Value)
+            {
+                return;
+            }
             login.IsLocked = true;
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             // Unlock after a minute.
-            await Task.Delay(1000);
+            await Task.Delay(60000);
             login.IsLocked = false;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
+
     }
 }

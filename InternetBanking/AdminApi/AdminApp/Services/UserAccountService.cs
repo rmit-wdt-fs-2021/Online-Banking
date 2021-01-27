@@ -1,8 +1,5 @@
 ﻿using AdminApp.Interfaces;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,6 +18,14 @@ namespace AdminApp.Services
             _logger = logger;
         }
 
+        public async Task LockAccountAsync(int id)
+        {
+            var response = await Client.PutAsync($"api/useraccount/{id}", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError($"Unable to lock {id}");
+            }
 
+        }
     }
 }

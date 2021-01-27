@@ -15,6 +15,7 @@ namespace AdminApp.Services
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<CustomerService> _logger;
         private HttpClient Client => _clientFactory.CreateClient("api");
+        private const string prefix = "api/customer";
 
         public CustomerService(IHttpClientFactory clientFactory, ILogger<CustomerService> logger)
         {
@@ -25,7 +26,7 @@ namespace AdminApp.Services
         public async Task<Customer> GetCustomerAsync(int id)
         {
             var customerID = id.ToString();
-            var customerResponse = await Client.GetAsync($"api/customer/{customerID}").ConfigureAwait(false);
+            var customerResponse = await Client.GetAsync($"{prefix}/{customerID}").ConfigureAwait(false);
 
             if (!customerResponse.IsSuccessStatusCode)
             {
@@ -36,6 +37,18 @@ namespace AdminApp.Services
             var customer = JsonConvert.DeserializeObject<Customer>(result);
 
             return customer;
+        }
+
+        public async Task<List<Customer>> GetAllCustomersAsync()
+        {
+            var response = await Client.GetAsync($"{prefix}").ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Unable to get any customers");
+            }
+
+            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<List<Customer>>(result);
         }
     }
 }

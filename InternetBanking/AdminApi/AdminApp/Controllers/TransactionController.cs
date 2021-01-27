@@ -43,7 +43,6 @@ namespace AdminApp.Controllers
             }
             else
             {
-               // var customer = await _customerService.GetCustomerAsync(viewModel.CustomerID);
                 var accounts = await _accountService.GetAccountsFromCustomerAsync(viewModel.CustomerID);
                 var transactions = await GetTransactionsAsync(accounts, viewModel.FromDate, viewModel.ToDate).ConfigureAwait(false);
                 return View(new TransactionViewModel

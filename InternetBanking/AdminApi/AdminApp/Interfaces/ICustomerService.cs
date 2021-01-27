@@ -8,6 +8,7 @@ namespace AdminApp.Interfaces
 {
     public interface ICustomerService
     {
+        Task<List<Customer>> GetAllCustomersAsync();
         Task<Customer> GetCustomerAsync(int id);
     }
 }

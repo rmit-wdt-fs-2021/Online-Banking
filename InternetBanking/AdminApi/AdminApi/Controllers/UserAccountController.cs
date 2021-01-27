@@ -15,9 +15,9 @@ namespace AdminApi.Controllers
             _repo = repo;
         }
 
-        // PUT api/userAccount
+        // PUT api/userAccount/2100
         [HttpPut("{id}")]
-        public async Task LockAccountAsync(string id)
+        public async Task LockAccountAsync(int id)
         {
             await _repo.LockAccountAsync(id);
         }

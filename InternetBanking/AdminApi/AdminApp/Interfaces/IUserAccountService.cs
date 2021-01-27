@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace AdminApp.Interfaces
 {
-    interface IUserAccountService
+    public interface IUserAccountService
     {
+        Task LockAccountAsync(int id);
     }
 }
