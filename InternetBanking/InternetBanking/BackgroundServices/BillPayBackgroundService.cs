@@ -91,7 +91,7 @@ namespace InternetBanking.BackgroundServices
             }
         }
 
-        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow.Date == ScheduledDate.Date;
+        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow.Date >= ScheduledDate.Date;
 
         private bool ValidateBillAmount(Account account, decimal amount)
         {
