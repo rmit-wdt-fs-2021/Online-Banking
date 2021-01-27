@@ -11,7 +11,7 @@ namespace AdminApp.Filters
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var user = context.HttpContext.Session.GetString(nameof(Admin.Username));
-            if (!string.IsNullOrEmpty(user))
+            if (string.IsNullOrEmpty(user))
                 context.Result = new RedirectToActionResult("Index", "Home", null);
         }
     }

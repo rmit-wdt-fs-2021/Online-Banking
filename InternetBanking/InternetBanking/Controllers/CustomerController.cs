@@ -40,6 +40,9 @@ namespace InternetBanking.Controllers
             return View(customer);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Deposit(int accountNumber)
         {
             return View(await CreateATMViewModelAsync(accountNumber).ConfigureAwait(false));

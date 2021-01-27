@@ -1,3 +1,5 @@
+using AdminApp.Interfaces;
+using AdminApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace AdminApp
@@ -29,6 +32,19 @@ namespace AdminApp
             {
                 options.Cookie.IsEssential = true;
             });
+
+            // Configure api client.
+            services.AddHttpClient("api", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000");
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            //services.AddHttpClient<ITransactionService, TransactionService>();
+            //services.AddHttpClient<ICustomerService, CustomerService>();
+
+            // Add business services
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddControllersWithViews();
         }
