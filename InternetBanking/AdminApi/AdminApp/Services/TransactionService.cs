@@ -52,20 +52,5 @@ namespace AdminApp.Services
             return transactions;
         }
 
-        public async Task<List<Transaction>> GetCustomerTransactionsAsync(Customer customer, DateTime? fromDate = null, DateTime? toDate = null)
-        {
-            var transactions = new List<Transaction>();
-            foreach (var account in customer.Accounts)
-            {
-                if(account != null)
-                {
-                    var transactionList = await GetTransactionsAsync(account.AccountNumber, fromDate, toDate).ConfigureAwait(false);
-                    transactions.Concat(transactionList);
-                }
-            }
-
-            return transactions;
-        }
-
     }
 }

@@ -39,8 +39,6 @@ namespace AdminApp
                 client.BaseAddress = new Uri("http://localhost:5000");
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
-            //services.AddHttpClient<ITransactionService, TransactionService>();
-            //services.AddHttpClient<ICustomerService, CustomerService>();
 
             // Add business services
             services.AddScoped<ITransactionService, TransactionService>();

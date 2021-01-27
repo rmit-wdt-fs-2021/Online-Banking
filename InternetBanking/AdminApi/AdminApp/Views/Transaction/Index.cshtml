@@ -31,23 +31,26 @@
 
     <table class="table">
         <tr>
-            <th>Transaction ID</th>
-            <th>Transaction ID</th>
-            <th>Transaction ID</th>
-            <th>Transaction ID</th>
-
+            <th>TransactionId</th>
+            <th>TransactionType</th>
+            <th>AccountNumber</th>
+            <th>Amount</th>
+            <th>TransactionTimeUtc</th>
+            <th>DestinationAccountNumber</th>
+            <th>Comment</th>
         </tr>
 
         @foreach (var transaction in Model.Transactions)
         {
-            <tr>
-                <td>@Html.DisplayFor(x => transaction.TransactionId)</td>
-                <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
-                <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
-                <td>@Html.DisplayFor(x => transaction.DestinationAccountNumber)</td>
-                <td>@Html.DisplayFor(x => transaction.Amount)</td>
-
-            </tr>
+    <tr>
+        <td>@Html.DisplayFor(x => transaction.TransactionId)</td>
+        <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
+        <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
+        <td>@Html.DisplayFor(x => transaction.Amount)</td>
+        <td>@Html.DisplayFor(x => transaction.TransactionTimeUtc)</td>
+        <td>@Html.DisplayFor(x => transaction.DestinationAccountNumber)</td>
+        <td>@Html.DisplayFor(x => transaction.Comment)</td>
+    </tr>
         }
     </table>
 

@@ -9,7 +9,6 @@ namespace AdminApp.Interfaces
     public interface ITransactionService
     {
         Task<List<Transaction>> GetAllTransactionsAsync();
-        Task<List<Transaction>> GetCustomerTransactionsAsync(Customer customer, DateTime? fromDate = null, DateTime? toDate = null);
         Task<List<Transaction>> GetTransactionsAsync(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null);
     }
 }
