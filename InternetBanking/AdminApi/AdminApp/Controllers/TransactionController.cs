@@ -15,7 +15,6 @@ namespace AdminApp.Controllers
 {
 
     [AuthorizeAdmin]
-    [Route("/Mcba/ViewTransactions")]
     public class TransactionController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -30,38 +29,38 @@ namespace AdminApp.Controllers
             _logger = logger;
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(TransactionViewModel viewModel)
         {
-            var transactions = await _transactionService.GetAllTransactionsAsync().ConfigureAwait(false);
-            return View(new TransactionViewModel
+            if (viewModel.CustomerID == 0)
             {
-                Transactions = transactions
-            });
+                var transactions = await _transactionService.GetAllTransactionsAsync().ConfigureAwait(false);
+                return View(new TransactionViewModel
+                {
+                    Transactions = transactions
+                });
+            }
+            else
+            {
+                var customer = await _customerService.GetCustomerAsync(viewModel.CustomerID);
+                var transactions = await _transactionService.GetCustomerTransactionsAsync(customer);
+                return View(new TransactionViewModel
+                {
+                    Transactions = transactions
+                });
+            }
         }
 
-        //public async Task<IActionResult> Index(TransactionViewModel viewModel)
-        //{
-        //    var customer = await GetCustomerAsync(viewModel.CustomerID).ConfigureAwait(false);
-
-        //    // Get accounts for customer
-        //    viewModel.Accounts = customer.Accounts.ToList();
-        //    var transactions = new List<Transaction>();
-        //    foreach (var account in viewModel.Accounts)
-        //    {
-        //        if (account != null)
-        //        {
-        //            var transactionList = await GetTransactionsAsync(account.AccountNumber).ConfigureAwait(false);
-        //            transactions.Concat(transactionList);
-        //        }
-        //    }
-        //    viewModel.Transactions = transactions;
-        //    return View(viewModel);
-        //}
-
-
-
-
+        [HttpGet]
+        public async Task<IActionResult> ViewTransactions(TransactionViewModel viewModel)
+        {
+           // var filteredTransactions = await _transactionService.GetTransactionsAsync(viewModel.CustomerID, fromDate, toDate).ConfigureAwait(false);
+            //var viewModel = new TransactionViewModel
+            //{
+            //    Transactions = filteredTransactions
+            //};
+           // return View(viewModel);
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }
