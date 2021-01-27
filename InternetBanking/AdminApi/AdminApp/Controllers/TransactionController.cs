@@ -62,23 +62,15 @@ namespace AdminApp.Controllers
                 if(account != null)
                 {
                     var transactionList = await _transactionService.GetTransactionsAsync(account.AccountNumber, fromDate, toDate).ConfigureAwait(false);
+                    if(transactionList == null)
+                    {
+                        _logger.LogError($"Unable to get any transactions for {account.AccountNumber}");
+                    }
                     transactions.AddRange(transactionList);
                 }
             }
 
             return transactions;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ViewTransactions(TransactionViewModel viewModel)
-        {
-           // var filteredTransactions = await _transactionService.GetTransactionsAsync(viewModel.CustomerID, fromDate, toDate).ConfigureAwait(false);
-            //var viewModel = new TransactionViewModel
-            //{
-            //    Transactions = filteredTransactions
-            //};
-           // return View(viewModel);
-            return RedirectToAction(nameof(Index));
         }
 
     }

@@ -40,7 +40,21 @@ namespace AdminApp.Services
         public async Task<List<Transaction>> GetTransactionsAsync(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var id = accountNumber.ToString();
-            var transactionResponse = await Client.GetAsync($"api/transaction/{id}");
+            HttpResponseMessage transactionResponse;
+            const string baseUri = "api/transaction";
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                transactionResponse = await Client.GetAsync($"{baseUri}/{id}/{ToSqlFormat(fromDate)}/{ToSqlFormat(toDate)}");
+            }else if(fromDate.HasValue && toDate == null)
+            {
+                transactionResponse = await Client.GetAsync($"{baseUri}/{id}/{ToSqlFormat(fromDate)}");
+            }
+            else
+            {
+                transactionResponse = await Client.GetAsync($"{baseUri}/{id}");
+
+            }
+           // transactionResponse = await Client.GetAsync($"{baseUri}/{id}/{fromDate.ToString()}/{toDate.ToString()}");
 
             if (!transactionResponse.IsSuccessStatusCode)
             {
@@ -50,6 +64,12 @@ namespace AdminApp.Services
             var result = await transactionResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var transactions = JsonConvert.DeserializeObject<List<Transaction>>(result);
             return transactions;
+        }
+
+        private static string ToSqlFormat(DateTime? dateTime)
+        {
+            var sqlFormattedDate = dateTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            return sqlFormattedDate;
         }
 
     }

@@ -10,10 +10,10 @@ namespace AdminApp.ViewModels
         [Display(Name = "Customer ID")]
         public int CustomerID { get; set; }
 
-        [Display(Name = "From Date")]
+        [Display(Name = "From Date"), DataType(DataType.Date)]
         public DateTime? FromDate { get; set; }
 
-        [Display(Name = "To Date")]
+        [Display(Name = "To Date"), DataType(DataType.Date)]
         public DateTime? ToDate { get; set; }
 
         public List<Account> Accounts { get; set; }

@@ -13,6 +13,10 @@ namespace AdminApi.Models.DataManager
 
         public IEnumerable<Transaction> GetTransactions(int accountNumber, DateTime? fromDate = null, DateTime? toDate = null)
         {
+            if (fromDate > toDate)
+            {
+                toDate = null; //ignore toDate
+            }
             IEnumerable<Transaction> retVal = null;
             if (fromDate is null && toDate is null)
             {
@@ -27,7 +31,7 @@ namespace AdminApi.Models.DataManager
             {
                 retVal = _context.Transactions.OrderByDescending(t => t.TransactionTimeUtc)
                                               .Where(t => t.AccountNumber == accountNumber
-                                                       && t.TransactionTimeUtc >= fromDate && t.TransactionTimeUtc <= toDate);
+                                                       && t.TransactionTimeUtc >= fromDate && t.TransactionTimeUtc.Date <= toDate);
             }
 
             return retVal;

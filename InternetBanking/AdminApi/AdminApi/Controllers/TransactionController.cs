@@ -23,6 +23,8 @@ namespace AdminApi.Controllers
             return _repo.GetAll();
         }
 
+        [HttpGet("{id}/{fromDate}/{toDate}")]
+        [HttpGet("{id}/{fromDate}")]
         [HttpGet("{id}")]
         public IEnumerable<Transaction> GetTransactions(int id, DateTime? fromDate = null, DateTime? toDate = null)
         {
