@@ -21,10 +21,44 @@ namespace InternetBanking.Controllers
         private readonly ITransactionService _transactionService;
         private const string AccountSessionKey = "_AccountSessionKey";
 
+        private int CustomerId => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
+
         public MyStatementsController(McbaContext context, ITransactionService transactionService)
         {
             _context = context;
             _transactionService = transactionService;
+        }
+
+        public IActionResult Index()
+        {
+            return View(new Account
+            {
+                CustomerID = CustomerId
+            });
+        }
+
+        public async Task<IActionResult> IndexToViewTransaction(Account viewModel)
+        {
+            var type = viewModel.AccountType;
+            // Lazy load customer
+            Customer customer = await _context.Customers.Include(x => x.Accounts).
+                                    FirstOrDefaultAsync(x => x.CustomerID == CustomerId);
+
+            // Get customer accounts
+            var account = customer.Accounts.FirstOrDefault(x=> x.AccountType == type);
+
+            if (account == null)
+            {
+                //TODO add error page for this
+                return NotFound();
+            }
+            var serializerSettings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects };
+
+            string accountJson = JsonConvert.SerializeObject(account, Formatting.Indented, serializerSettings);
+
+            HttpContext.Session.SetString(AccountSessionKey, accountJson);
+
+            return RedirectToAction(nameof(ViewTransactions));
         }
 
         public async Task<IActionResult> IndexToViewTransactions(int accountNumber)

@@ -10,9 +10,8 @@
     var account = (Account)ViewBag.Account;
 }
 
-<h1>Transactions for @account.AccountNumber</h1>
+<h1>Transactions for @account.AccountNumber: @account.AccountType</h1>
 <div>
-    <h1>Transactions for @account.AccountNumber: @account.AccountType</h1>
     <table class="table">
         <tr>
             <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionID)</th>
@@ -27,7 +26,7 @@
             <tr>
                 <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
                 @if (transaction.TransactionType == TransactionType.Withdraw || transaction.TransactionType == TransactionType.ServiceCharge
-                     || (transaction.TransactionType == TransactionType.Transfer && transaction.DestinationAccountNumber != account.AccountNumber))
+                    || (transaction.TransactionType == TransactionType.Transfer && transaction.DestinationAccountNumber != account.AccountNumber))
                 {
                     <td>-$@Html.DisplayFor(x => transaction.Amount)</td>
                 }

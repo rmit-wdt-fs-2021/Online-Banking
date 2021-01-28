@@ -1,0 +1,20 @@
+﻿@model Account
+@{
+    ViewData["Title"] = "Statements";
+    var account = (Account)ViewBag.Account;
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="IndexToViewTransaction">
+            <label asp-for="AccountType"></label>
+            @Html.DropDownListFor(m => m.AccountType,
+            new SelectList(Enum.GetValues(typeof(AccountType))),
+            "Select type")
+
+            <div class="form-group">
+                <input type="submit" value="View Statement" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
