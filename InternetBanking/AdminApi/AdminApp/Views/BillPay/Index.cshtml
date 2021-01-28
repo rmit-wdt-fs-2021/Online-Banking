@@ -1,5 +1,50 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model AdminApp.ViewModels.BillPayViewModel
 @{
+    ViewData["Title"] = "Block/Unblock bill pays";
 }
+
+<h3>Block or unblock bill pays.</h3>
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Amount</th>
+        <th>Scheduled Date</th>
+        <th>Period</th>
+        <th>Account Number</th>
+        <th></th>
+    </tr>
+
+    @foreach (var billPay in Model.BillPays)
+    {
+        <tr>
+            <td>
+                @if (billPay.IsBlocked.Value)
+                {
+                    <a asp-action="Unblock" asp-route-id="@billPay.BillPayId">Unblock</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Block", "BillPay", new { id = billPay.BillPayId })">Block</a>
+                }
+            </td>
+
+            <td>
+                @Html.DisplayFor(x => billPay.BillPayId)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.ScheduledDate)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.Period)
+            </td>
+            <td>
+                @Html.DisplayFor(x => billPay.AccountNumber)
+            </td>
+        </tr>
+    }
+</table>

@@ -44,6 +44,7 @@ namespace AdminApp
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IBillPayService, BillPayService>();
             services.AddScoped<IUserAccountService, UserAccountService>();
 
             services.AddControllersWithViews();

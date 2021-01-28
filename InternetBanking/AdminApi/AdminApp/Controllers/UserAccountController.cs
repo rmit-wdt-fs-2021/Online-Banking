@@ -20,7 +20,6 @@ namespace AdminApp.Controllers
             _logger = logger;
         }
 
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(UserAccountViewModel viewModel)
         {
             viewModel.Customers = await _customerService.GetAllCustomersAsync().ConfigureAwait(false);

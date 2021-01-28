@@ -14,5 +14,7 @@ namespace AdminApp.ViewModels
 
         [Display(Name = "Bill Pays")]
         public List<BillPay> BillPays { get; set; }
+
+        public bool IsBlocked { get; set; }
     }
 }

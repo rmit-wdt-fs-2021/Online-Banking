@@ -68,6 +68,12 @@ namespace InternetBanking.BackgroundServices
                 return;
             }
 
+            if (billPay.IsBlocked)
+            {
+                _logger.LogInformation($"Bill Pay {billPay.BillPayID} has been blocked by an admin.");
+                return;
+            }
+
             if (ValidateBillAmount(accountToBeCharged, billPay.Amount))
             {
                 await _transactionService.AddBillPayTransaction(accountToBeCharged, billPay.Amount).ConfigureAwait(false);
