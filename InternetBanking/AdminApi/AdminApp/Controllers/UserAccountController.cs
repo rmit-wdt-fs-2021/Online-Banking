@@ -1,14 +1,13 @@
-﻿using AdminApp.Interfaces;
+﻿using AdminApp.Filters;
+using AdminApp.Interfaces;
 using AdminApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdminApp.Controllers
 {
+    [AuthorizeAdmin]
     public class UserAccountController : Controller
     {
         private readonly ILogger<UserAccountController> _logger;
@@ -21,6 +20,7 @@ namespace AdminApp.Controllers
             _logger = logger;
         }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(UserAccountViewModel viewModel)
         {
             viewModel.Customers = await _customerService.GetAllCustomersAsync().ConfigureAwait(false);
@@ -31,10 +31,6 @@ namespace AdminApp.Controllers
 
             await _userAccountService.LockAccountAsync(viewModel.CustomerID).ConfigureAwait(false);
             return View(viewModel);
-        }
-
-        private void LockAccount(int customerID)
-        {
         }
     }
 }

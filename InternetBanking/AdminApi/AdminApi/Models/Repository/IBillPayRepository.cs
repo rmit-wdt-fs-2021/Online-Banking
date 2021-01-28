@@ -8,7 +8,11 @@ namespace AdminApi.Models.Repository
 {
     public interface IBillPayRepository : IDataRepository<BillPay, int>
     {
-        public Task BlockBillPayAsync(int billPayID);
-        public Task UnblockBillPayAsync(int billPayID);
+        /// <summary>
+        /// Block or unblock a bill pay.
+        /// </summary>
+        /// <param name="billPayID">Id of bill pay to block/unblock</param>
+        /// <param name="blockFlag">True -> block, False -> Unblock</param>
+        public Task BlockBillPayAsync(int billPayID, bool blockFlag);
     }
 }
