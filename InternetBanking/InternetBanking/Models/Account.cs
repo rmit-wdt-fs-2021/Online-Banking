@@ -30,7 +30,7 @@ namespace InternetBanking.Models
         [DataType(DataType.Currency)]
         public decimal Balance { get; set; }
 
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual List<Transaction> Transactions { get; set; }
 
         [Required]
         public DateTime ModifyDate { get; set; }

@@ -51,7 +51,7 @@ namespace InternetBanking.Controllers
             var accountJson = HttpContext.Session.GetString(AccountSessionKey);
             if (accountJson == null)
             {
-                //return RedirectToAction(nameof(CustomerController.Index));
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
             var account = JsonConvert.DeserializeObject<Account>(accountJson);
