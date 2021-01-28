@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InternetBanking.Data;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
-using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using X.PagedList;
+using InternetBanking.Filters;
 
 namespace InternetBanking.Controllers
 {
+    /// <summary>
+    /// Code referenced from Matthew Bolger's Tut/Lab 07.
+    /// </summary>
     public class MyStatementsController : Controller
     {
         private readonly McbaContext _context;
@@ -23,6 +23,7 @@ namespace InternetBanking.Controllers
 
         private int CustomerId => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
 
+        [AuthorizeCustomer]
         public MyStatementsController(McbaContext context, ITransactionService transactionService)
         {
             _context = context;
@@ -37,15 +38,14 @@ namespace InternetBanking.Controllers
             });
         }
 
-        public async Task<IActionResult> IndexToViewTransaction(Account viewModel)
+        public async Task<IActionResult> IndexToViewTransaction(Account model)
         {
-            var type = viewModel.AccountType;
             // Lazy load customer
             Customer customer = await _context.Customers.Include(x => x.Accounts).
                                     FirstOrDefaultAsync(x => x.CustomerID == CustomerId);
 
-            // Get customer accounts
-            var account = customer.Accounts.FirstOrDefault(x=> x.AccountType == type);
+            // Get customer account by type.
+            var account = customer.Accounts.FirstOrDefault(x => x.AccountType == model.AccountType);
 
             if (account == null)
             {
@@ -97,8 +97,3 @@ namespace InternetBanking.Controllers
         }
     }
 }
-
-       
-    
-    
-

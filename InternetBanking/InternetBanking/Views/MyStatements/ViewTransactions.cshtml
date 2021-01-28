@@ -1,7 +1,6 @@
 ﻿@using X.PagedList
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Mvc.Core.Common
-@using Microsoft.CodeAnalysis.CSharp.Syntax
 @model IPagedList<Transaction>
 
 
@@ -11,6 +10,7 @@
 }
 
 <h1>Transactions for @account.AccountNumber: @account.AccountType</h1>
+<h2>Current Balance : $@account.Balance.ToString("0.##")</h2>
 <div>
     <table class="table">
         <tr>
@@ -19,6 +19,8 @@
             <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.Comment)</th>
             <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionType)</th>
             <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.TransactionTimeUtc)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.AccountNumber)</th>
+            <th>@Html.DisplayNameFor(x => x.GetEnumerator().Current.DestinationAccountNumber)</th>
         </tr>
 
         @foreach (var transaction in Model)
@@ -26,7 +28,7 @@
             <tr>
                 <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
                 @if (transaction.TransactionType == TransactionType.Withdraw || transaction.TransactionType == TransactionType.ServiceCharge
-                    || (transaction.TransactionType == TransactionType.Transfer && transaction.DestinationAccountNumber != account.AccountNumber))
+                || (transaction.TransactionType == TransactionType.Transfer && transaction.DestinationAccountNumber != account.AccountNumber))
                 {
                     <td>-$@Html.DisplayFor(x => transaction.Amount)</td>
                 }
@@ -37,6 +39,9 @@
                 <td>@Html.DisplayFor(x => transaction.Comment)</td>
                 <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
                 <td>@Html.DisplayFor(x => transaction.TransactionTimeUtc)</td>
+                <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
+                <td>@Html.DisplayFor(x => transaction.DestinationAccountNumber)</td>
+
             </tr>
         }
     </table>
@@ -47,5 +52,9 @@
             LiElementClasses = new[] { "page-item" },
             PageClasses = new[] { "page-link" }
         })
+
+    <div>
+        <a asp-action="Index">Back to Account Selection.</a>
+    </div>
 </div>
 
