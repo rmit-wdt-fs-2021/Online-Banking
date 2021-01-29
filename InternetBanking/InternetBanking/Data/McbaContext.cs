@@ -1,9 +1,10 @@
 ﻿using InternetBanking.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InternetBanking.Data
 {
-    public class McbaContext : DbContext
+    public class McbaContext : IdentityDbContext
     {
         public McbaContext(DbContextOptions<McbaContext> options) : base(options)
         { }

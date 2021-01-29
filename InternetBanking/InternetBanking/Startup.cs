@@ -4,6 +4,7 @@ using InternetBanking.Interfaces;
 using InternetBanking.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,11 @@ namespace InternetBanking
                 //Enable lazy loading
                 options.UseLazyLoadingProxies();
             });
+
+
+            // Add Identity services
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<McbaContext>();
 
             // Store session into Web-Server memory
             services.AddDistributedMemoryCache();
@@ -64,6 +70,9 @@ namespace InternetBanking
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+
             app.UseSession();
             app.UseRouting();
 
