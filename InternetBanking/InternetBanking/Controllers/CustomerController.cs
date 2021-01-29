@@ -7,6 +7,7 @@ using InternetBanking.Utilities;
 using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -17,13 +18,15 @@ namespace InternetBanking.Controllers
     {
         private readonly McbaContext _context;
         private readonly ITransactionService _transactionService;
+        private readonly ILogger<CustomerController> _logger;
 
         private int CustomerID => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
 
-        public CustomerController(McbaContext context, ITransactionService transactionService)
+        public CustomerController(McbaContext context, ITransactionService transactionService, ILogger<CustomerController> logger)
         {
             _context = context;
             _transactionService = transactionService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -72,7 +75,8 @@ namespace InternetBanking.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError(string.Empty, "Something went wrong and deposit was unsuccessful: " + e.Message);
+                ModelState.AddModelError(string.Empty, "Something went wrong and deposit was unsuccessful: ");
+                _logger.LogError(e.Message);
             }
 
             if (!ModelState.IsValid)
@@ -109,7 +113,8 @@ namespace InternetBanking.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError(string.Empty, "Something went wrong and withdraw was unsuccessful: " + e.Message);
+                ModelState.AddModelError(string.Empty, "Something went wrong and withdraw was unsuccessful: ");
+                _logger.LogError(e.Message);
             }
 
             if (!ModelState.IsValid)
