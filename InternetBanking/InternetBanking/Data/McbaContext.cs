@@ -1,9 +1,11 @@
-﻿using InternetBanking.Models;
+﻿using InternetBanking.Migrations;
+using InternetBanking.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InternetBanking.Data
 {
-    public class McbaContext : DbContext
+    public class McbaContext : IdentityDbContext
     {
         public McbaContext(DbContextOptions<McbaContext> options) : base(options)
         { }
@@ -14,6 +16,7 @@ namespace InternetBanking.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Payee> Payees { get; set; }
         public DbSet<BillPay> BillPay { get; set; }
+        public DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
