@@ -40,17 +40,17 @@ namespace InternetBanking.Controllers
 
         public async Task<IActionResult> IndexToViewTransaction(Account model)
         {
-            // Lazy load customer
+            // Eager load customer
             Customer customer = await _context.Customers.Include(x => x.Accounts).
                                     FirstOrDefaultAsync(x => x.CustomerID == CustomerId);
 
             // Get customer account by type.
-            var account = customer.Accounts.FirstOrDefault(x => x.AccountType == model.AccountType);
+            Account account = customer.Accounts.FirstOrDefault(x => x.AccountType == model.AccountType);
 
             if (account == null)
             {
-                //TODO add error page for this
-                return NotFound();
+                // TODO : show custom err page?
+                return RedirectToAction(nameof(Index));
             }
             var serializerSettings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects };
 

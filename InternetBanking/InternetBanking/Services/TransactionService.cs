@@ -4,8 +4,6 @@ using InternetBanking.Interfaces;
 using InternetBanking.Models;
 using InternetBanking.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace InternetBanking.Services
@@ -15,7 +13,6 @@ namespace InternetBanking.Services
         private readonly McbaContext _context;
         private const int freeTransactions = 4;
 
-        // TODO : Add logger
         public TransactionService(McbaContext context)
         {
             _context = context;
@@ -134,7 +131,7 @@ namespace InternetBanking.Services
             AddTransaction(srcAccount, TransactionType.Transfer, amount, destAccount.AccountNumber, comment);
 
             destAccount.Balance += amount;
-            destAccount.ModifyDate = DateTime.UtcNow;
+            AddTransaction(destAccount, TransactionType.Transfer, amount, comment : comment);
         }
 
         private void AddTransaction(Account account, TransactionType type, decimal amt, int? destNumber = null, string comment = null)
