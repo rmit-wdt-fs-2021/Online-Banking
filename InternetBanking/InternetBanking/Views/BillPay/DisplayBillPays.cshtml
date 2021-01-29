@@ -11,6 +11,7 @@
         <th>Amount</th>
         <th>Scheduled Date</th>
         <th>Period</th>
+        <th></th>
     </tr>
 
     @foreach(var billPay in Model.BillPays)
@@ -30,6 +31,12 @@
             </td>
             <td>
                 @Html.DisplayFor(x => billPay.Period)
+            </td>
+            <td>
+                @if (billPay.IsBlocked)
+                {
+                    <p>Blocked</p>
+                }
             </td>
         </tr>
     }

@@ -20,7 +20,7 @@ namespace InternetBanking.Controllers
         public async Task<IActionResult> Login(string loginID, string password)
         {
             var login = await _context.Logins.FindAsync(loginID);
-            if (login == null || !PBKDF2.Verify(login.PasswordHash, password))
+            if (login == null || !PBKDF2.Verify(login.PasswordHash, password) || login.IsLocked)
             {
                 ModelState.AddModelError("LoginFailed", "Login failed, please try again.");
                 return View(new Login { LoginID = loginID });

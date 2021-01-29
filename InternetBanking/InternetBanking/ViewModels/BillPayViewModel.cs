@@ -26,6 +26,8 @@ namespace InternetBanking.ViewModels
         [Required]
         public BillPeriod Period { get; set; }
 
+        public bool IsBlocked { get; set; }
+
         public List<Payee> Payees { get; set; }
     }
 }

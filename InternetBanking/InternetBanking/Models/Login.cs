@@ -16,6 +16,8 @@ namespace InternetBanking.Models
         [Required, StringLength(64)]
         public string PasswordHash { get; set; }
 
+        public bool IsLocked { get; set; }
+
         [Required]
         public DateTime ModifyDate { get; set; }
     }

@@ -68,6 +68,12 @@ namespace InternetBanking.BackgroundServices
                 return;
             }
 
+            if (billPay.IsBlocked)
+            {
+                _logger.LogInformation($"Bill Pay {billPay.BillPayID} has been blocked by an admin.");
+                return;
+            }
+
             if (ValidateBillAmount(accountToBeCharged, billPay.Amount))
             {
                 await _transactionService.AddBillPayTransaction(accountToBeCharged, billPay.Amount).ConfigureAwait(false);
@@ -91,7 +97,7 @@ namespace InternetBanking.BackgroundServices
             }
         }
 
-        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow.Date == ScheduledDate.Date;
+        private bool IsTimeToProcessBill(DateTime ScheduledDate) => DateTime.UtcNow.Date >= ScheduledDate.Date;
 
         private bool ValidateBillAmount(Account account, decimal amount)
         {

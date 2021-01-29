@@ -38,5 +38,7 @@ namespace InternetBanking.Models
 
         [Required]
         public DateTime ModifyDate { get; set; } = DateTime.UtcNow;
+
+        public bool IsBlocked { get; set; }
     }
 }

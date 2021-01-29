@@ -58,6 +58,9 @@ namespace InternetBanking.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifyDate")
                         .HasColumnType("datetime2");
 
@@ -126,6 +129,9 @@ namespace InternetBanking.Migrations
 
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifyDate")
                         .HasColumnType("datetime2");
