@@ -91,7 +91,9 @@ namespace InternetBanking.Controllers
             var account = JsonConvert.DeserializeObject<Account>(accountJson);
             ViewBag.Account = account;
 
-            var pagedList = await _context.Transactions.Where(x => x.AccountNumber == account.AccountNumber)
+            var pagedList = await _context.Transactions
+                .OrderByDescending(x => x.TransactionTimeUtc)
+                .Where(x => x.AccountNumber == account.AccountNumber)
                 .ToPagedListAsync(page, pageSize);
             return View(pagedList);
         }
