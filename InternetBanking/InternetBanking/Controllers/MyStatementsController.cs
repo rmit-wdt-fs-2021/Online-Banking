@@ -1,30 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InternetBanking.Data;
 using InternetBanking.Interfaces;
 using InternetBanking.Models;
-using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using X.PagedList;
+using InternetBanking.Filters;
 
 namespace InternetBanking.Controllers
 {
+    /// <summary>
+    /// Code referenced from Matthew Bolger's Tut/Lab 07.
+    /// </summary>
     public class MyStatementsController : Controller
     {
         private readonly McbaContext _context;
         private readonly ITransactionService _transactionService;
         private const string AccountSessionKey = "_AccountSessionKey";
 
+        private int CustomerId => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
+
+        [AuthorizeCustomer]
         public MyStatementsController(McbaContext context, ITransactionService transactionService)
         {
             _context = context;
             _transactionService = transactionService;
+        }
+
+        public IActionResult Index()
+        {
+            return View(new Account
+            {
+                CustomerID = CustomerId
+            });
+        }
+
+        public async Task<IActionResult> IndexToViewTransaction(Account model)
+        {
+            // Lazy load customer
+            Customer customer = await _context.Customers.Include(x => x.Accounts).
+                                    FirstOrDefaultAsync(x => x.CustomerID == CustomerId);
+
+            // Get customer account by type.
+            var account = customer.Accounts.FirstOrDefault(x => x.AccountType == model.AccountType);
+
+            if (account == null)
+            {
+                //TODO add error page for this
+                return NotFound();
+            }
+            var serializerSettings = new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects };
+
+            string accountJson = JsonConvert.SerializeObject(account, Formatting.Indented, serializerSettings);
+
+            HttpContext.Session.SetString(AccountSessionKey, accountJson);
+
+            return RedirectToAction(nameof(ViewTransactions));
         }
 
         public async Task<IActionResult> IndexToViewTransactions(int accountNumber)
@@ -63,8 +97,3 @@ namespace InternetBanking.Controllers
         }
     }
 }
-
-       
-    
-    
-
