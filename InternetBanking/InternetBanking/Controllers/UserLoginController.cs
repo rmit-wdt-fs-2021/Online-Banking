@@ -4,6 +4,7 @@ using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace InternetBanking.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(
-                    model.LoginID, model.Password, model.RememberMe, false);
+                    model.LoginID, model.Password, false, false);
 
                 if (!result.Succeeded)
                 {
@@ -59,11 +60,11 @@ namespace InternetBanking.Controllers
             }
             // Login customer.
             // Use username to get customer Id.
-            //var customer = await _context.Customers.FirstOrDefault(x => x)
-            //HttpContext.Session.SetInt32(nameof(Customer.CustomerID), model.);
-            //HttpContext.Session.SetString(nameof(Customer.Name), login.Customer.Name);
-            return RedirectToAction("index", "home");
+            var customer = await _context.Customers.FirstOrDefaultAsync(x => x.LoginID == model.LoginID);
+            HttpContext.Session.SetInt32(nameof(Customer.CustomerID), customer.CustomerID);
+            HttpContext.Session.SetString(nameof(Customer.Name), customer.Name);
 
+            return RedirectToAction("Index", "Customer");
         }
     }
 }
