@@ -16,6 +16,10 @@ namespace InternetBanking.ViewModels
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "Enter an unique 8 digit id")]
+        public string LoginID { get; set; }
+
+        [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

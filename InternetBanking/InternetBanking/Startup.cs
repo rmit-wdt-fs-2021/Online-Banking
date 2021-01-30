@@ -37,12 +37,24 @@ namespace InternetBanking
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<McbaContext>();
 
+            // Override password default settings in asp.net core identity to make testing easier.
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+
+
             // Store session into Web-Server memory
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;
             });
+
 
             // Add business services.
             services.AddScoped<ITransactionService, TransactionService>();
