@@ -50,24 +50,12 @@ namespace InternetBanking.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    //AddCustomerAsync(model);
+
                     return RedirectToAction("index", "home");
                 }
 
-                var customer = new Customer {
-                    Name = model.Name,
-                    TFN = model.TFN,
-                    Address = model.Address,
-                    City = model.City,
-                    State = model.State,
-                    PostCode = model.PostCode,
-                    Phone = model.Phone,
-                    // TODO Add accounts
-                };
-
-                await _context.Customers.AddAsync(customer);
-
-                // If there are any errors, add them to the ModelState object
-                // which will be displayed by the validation summary tag helper
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -107,6 +95,25 @@ namespace InternetBanking.Controllers
             }
 
             return View(model);
+        }
+
+
+        private async Task AddCustomerAsync(RegisterViewModel model)
+        {
+            var customer = new Customer
+            {
+                CustomerID = model.CustomerID,
+                Name = model.Name,
+                TFN = model.TFN,
+                Address = model.Address,
+                City = model.City,
+                State = model.State,
+                PostCode = model.PostCode,
+                Phone = model.Phone,
+            };
+
+            await _context.AddAsync(customer).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

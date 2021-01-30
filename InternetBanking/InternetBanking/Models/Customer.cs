@@ -31,6 +31,9 @@ namespace InternetBanking.Models
         [RegularExpression(@"\+61 ?\d{4} \d{4}")]
         public string Phone { get; set; }
 
+        [StringLength(8)]
+        public string LoginID { get; set; }
+
         public virtual List<Account> Accounts { get; set; }
     }
 }
