@@ -1,4 +1,6 @@
-﻿using InternetBanking.ViewModels;
+﻿using InternetBanking.Data;
+using InternetBanking.Models;
+using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,11 +15,13 @@ namespace InternetBanking.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly McbaContext _context;
 
-        public UserAccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UserAccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, McbaContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -34,7 +38,7 @@ namespace InternetBanking.Controllers
                 // Copy data from RegisterViewModel to IdentityUser
                 var user = new IdentityUser
                 {
-                    UserName = model.Email,
+                    UserName = model.LoginID,
                     Email = model.Email
                 };
 
@@ -48,6 +52,19 @@ namespace InternetBanking.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
+
+                var customer = new Customer {
+                    Name = model.Name,
+                    TFN = model.TFN,
+                    Address = model.Address,
+                    City = model.City,
+                    State = model.State,
+                    PostCode = model.PostCode,
+                    Phone = model.Phone,
+                    // TODO Add accounts
+                };
+
+                await _context.Customers.AddAsync(customer);
 
                 // If there are any errors, add them to the ModelState object
                 // which will be displayed by the validation summary tag helper
