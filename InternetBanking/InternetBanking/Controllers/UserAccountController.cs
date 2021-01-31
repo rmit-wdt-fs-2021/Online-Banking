@@ -1,4 +1,5 @@
-﻿using InternetBanking.Data;
+﻿using System;
+using InternetBanking.Data;
 using InternetBanking.Models;
 using InternetBanking.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -46,8 +47,7 @@ namespace InternetBanking.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
 
 
-                // If user is successfully created, sign-in the user using
-                // SignInManager and redirect to index action of HomeController
+                // If user is successfully created, redirect to index action of HomeController
                 if (result.Succeeded)
                 {
                     var customer = await _context.Customers.FindAsync(model.CustomerID).ConfigureAwait(false);
@@ -117,7 +117,18 @@ namespace InternetBanking.Controllers
                 Username = model.LoginID
             };
 
+            //Adding an account automatically to allow usage when registering
+            var account = new Account
+            {
+                AccountNumber = new Random(DateTime.UtcNow.Millisecond).Next(4500,9999),
+                AccountType = AccountType.Saving,
+                CustomerID = model.CustomerID,
+                Balance = 500,
+                ModifyDate = DateTime.UtcNow
+            };
+
             await _context.AddAsync(customer).ConfigureAwait(false);
+            await _context.AddAsync(account).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }

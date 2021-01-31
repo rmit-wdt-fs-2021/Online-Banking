@@ -51,6 +51,13 @@ namespace InternetBanking.Controllers
                 var result = await _signInManager.PasswordSignInAsync(
                     model.LoginID, model.Password, false, false);
                 var login = await _context.Logins.FindAsync(model.LoginID);
+                if (login == null)
+                {
+                    login = new Login
+                    {
+                        IsLocked = false
+                    };
+                }
 
                 if (!result.Succeeded || login.IsLocked)
                 {
