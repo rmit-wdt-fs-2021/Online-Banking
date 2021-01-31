@@ -1,0 +1,34 @@
+﻿@model int
+
+@{
+    //Used from lecture 7
+    var errorCode = Model;
+    var statusMessage = "";
+
+    switch (errorCode)
+    {
+        case 400:
+            statusMessage = "Bad request";
+            break;
+        case 403:
+            statusMessage = "Forbidden";
+            break;
+        case 404:
+            statusMessage = "Page not found";
+            break;
+        case 408:
+            statusMessage = "Server timed out";
+            break;
+        default:
+            statusMessage = "Something went wrong";
+            break;
+    }
+
+    <div class="jumbotron">
+        <h1>Error @Model</h1>
+        <h2>@statusMessage</h2>
+    </div>
+    <img src="~/img/errorimage.jpg" class="rounded float-sm-none" alt="source: http://clipart-library.com/clipart/kc8ngpLEi.htm">
+
+
+}
