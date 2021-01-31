@@ -1,7 +1,7 @@
 Web development technologies assignment 2.
 Submitted by
 Md Abir Ishtiaque, s3677701
-Aidan J Hollan, s3629236
+Aidan J Holland, s3629236
 
 Initial code was referenced from Matthew Bolger's Tute/Lab 06. 
 
