@@ -54,9 +54,9 @@ namespace InternetBanking.BackgroundServices
                 if(newAccount.ModifyDate != initialAccount.ModifyDate)
                 {
                     _logger.LogInformation($"Account : {newAccount.AccountNumber} has been updated...sending email.");
+                    // TODO : send email
                 }
             }
         }
-
     }
 }
