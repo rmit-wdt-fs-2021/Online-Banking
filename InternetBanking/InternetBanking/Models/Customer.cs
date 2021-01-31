@@ -32,7 +32,7 @@ namespace InternetBanking.Models
         public string Phone { get; set; }
 
         [StringLength(8)]
-        public string LoginID { get; set; }
+        public string Username { get; set; }
 
         public virtual List<Account> Accounts { get; set; }
     }

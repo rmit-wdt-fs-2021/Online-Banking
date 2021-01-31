@@ -45,12 +45,12 @@ namespace InternetBanking.Controllers
                 // Store user data in AspNetUsers database table
                 var result = await _userManager.CreateAsync(user, model.Password);
 
+
                 // If user is successfully created, sign-in the user using
                 // SignInManager and redirect to index action of HomeController
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
                     //AddCustomerAsync(model);
 
                     return RedirectToAction("index", "home");

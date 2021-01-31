@@ -50,8 +50,9 @@ namespace InternetBanking.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(
                     model.LoginID, model.Password, false, false);
+                var login = await _context.Logins.FindAsync(model.LoginID);
 
-                if (!result.Succeeded)
+                if (!result.Succeeded && !login.IsLocked)
                 {
                     ModelState.AddModelError("LoginFailed", "Login failed, please try again.");
                     return View(model);
@@ -60,7 +61,7 @@ namespace InternetBanking.Controllers
             }
             // Login customer.
             // Use username to get customer Id.
-            var customer = await _context.Customers.FirstOrDefaultAsync(x => x.LoginID == model.LoginID);
+            var customer = await _context.Customers.FirstOrDefaultAsync(x => x.Username == model.LoginID);
             HttpContext.Session.SetInt32(nameof(Customer.CustomerID), customer.CustomerID);
             HttpContext.Session.SetString(nameof(Customer.Name), customer.Name);
 
