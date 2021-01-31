@@ -50,8 +50,12 @@ namespace InternetBanking.Controllers
                 // SignInManager and redirect to index action of HomeController
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    //AddCustomerAsync(model);
+                    var customer = await _context.Customers.FindAsync(model.CustomerID).ConfigureAwait(false);
+
+                    if(customer == null)
+                    {
+                        await AddCustomerAsync(model).ConfigureAwait(false);
+                    }
 
                     return RedirectToAction("index", "home");
                 }
