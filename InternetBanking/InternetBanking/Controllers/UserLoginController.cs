@@ -52,7 +52,7 @@ namespace InternetBanking.Controllers
                     model.LoginID, model.Password, false, false);
                 var login = await _context.Logins.FindAsync(model.LoginID);
 
-                if (!result.Succeeded && !login.IsLocked)
+                if (!result.Succeeded || login.IsLocked)
                 {
                     ModelState.AddModelError("LoginFailed", "Login failed, please try again.");
                     return View(model);
