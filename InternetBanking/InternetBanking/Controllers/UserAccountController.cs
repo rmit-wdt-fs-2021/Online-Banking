@@ -114,6 +114,7 @@ namespace InternetBanking.Controllers
                 State = model.State,
                 PostCode = model.PostCode,
                 Phone = model.Phone,
+                Username = model.LoginID
             };
 
             await _context.AddAsync(customer).ConfigureAwait(false);
