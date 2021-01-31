@@ -28,7 +28,11 @@ namespace InternetBanking.Models
         public string PostCode { get; set; }
 
         [StringLength(15)]
+        [RegularExpression(@"\+61 ?\d{4} \d{4}")]
         public string Phone { get; set; }
+
+        [StringLength(8)]
+        public string Username { get; set; }
 
         public virtual List<Account> Accounts { get; set; }
     }

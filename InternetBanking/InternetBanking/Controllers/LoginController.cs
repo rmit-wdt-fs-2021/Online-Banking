@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace InternetBanking.Controllers
 {
+    /// <summary>
+    /// Deprecated login method.
+    /// </summary>
     [Route("/Mcba/SecureLogin")]
     public class LoginController : Controller
     {

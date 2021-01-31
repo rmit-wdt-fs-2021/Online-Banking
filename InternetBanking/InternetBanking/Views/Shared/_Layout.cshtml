@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +22,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav">
                         @{
-                            var isLoggedIn = Context.Session.GetInt32(nameof(Customer.CustomerID)).HasValue;
+                            var isLoggedIn = signInManager.IsSignedIn(User);
                         }
                         @if (isLoggedIn)
                         {
@@ -30,13 +32,16 @@
                                 </span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout">Logout</a>
+                                <a class="nav-link text-dark" asp-controller="UserLogin" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-controller="UserLogin" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="UserAccount" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>

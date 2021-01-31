@@ -4,14 +4,16 @@ using InternetBanking.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InternetBanking.Migrations
 {
     [DbContext(typeof(McbaContext))]
-    partial class McbaContextModelSnapshot : ModelSnapshot
+    [Migration("20210129085927_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,10 +117,6 @@ namespace InternetBanking.Migrations
                     b.Property<string>("TFN")
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
-
-                    b.Property<string>("Username")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
 
                     b.HasKey("CustomerID");
 

@@ -4,14 +4,16 @@ using InternetBanking.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InternetBanking.Migrations
 {
     [DbContext(typeof(McbaContext))]
-    partial class McbaContextModelSnapshot : ModelSnapshot
+    [Migration("20210130170314_AddLoginId")]
+    partial class AddLoginId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,6 +97,9 @@ namespace InternetBanking.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<string>("LoginID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -116,10 +121,6 @@ namespace InternetBanking.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.Property<string>("Username")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.HasKey("CustomerID");
 
                     b.ToTable("Customers");
@@ -132,6 +133,9 @@ namespace InternetBanking.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<int>("CustomerID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerID1")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsLocked")
@@ -147,7 +151,7 @@ namespace InternetBanking.Migrations
 
                     b.HasKey("LoginID");
 
-                    b.HasIndex("CustomerID");
+                    b.HasIndex("CustomerID1");
 
                     b.ToTable("Logins");
 
@@ -461,9 +465,7 @@ namespace InternetBanking.Migrations
                 {
                     b.HasOne("InternetBanking.Models.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerID1");
 
                     b.Navigation("Customer");
                 });

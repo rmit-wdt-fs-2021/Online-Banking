@@ -4,6 +4,7 @@ using InternetBanking.Interfaces;
 using InternetBanking.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,12 +32,29 @@ namespace InternetBanking
                 options.UseLazyLoadingProxies();
             });
 
+
+            // Add Identity services
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<McbaContext>();
+
+            // Override password default settings in asp.net core identity to make testing easier.
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+
+
             // Store session into Web-Server memory
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;
             });
+
 
             // Add business services.
             services.AddScoped<ITransactionService, TransactionService>();
@@ -66,6 +84,9 @@ namespace InternetBanking
             app.UseStatusCodePagesWithReExecute("/ErrorCode/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+
             app.UseSession();
             app.UseRouting();
 

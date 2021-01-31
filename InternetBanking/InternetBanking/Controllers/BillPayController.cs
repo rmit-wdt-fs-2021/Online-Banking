@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -55,10 +56,27 @@ namespace InternetBanking.Controllers
 
         public async Task<IActionResult> DisplayBillPays()
         {
+            // Display bill pays belonging to logged in customer
+            var customer = await _context.Customers.FindAsync(CustomerID);
+            var accounts = customer.Accounts;
+            var accountNumbers = new List<int>();
+            foreach(var account in accounts)
+            {
+                accountNumbers.Add(account.AccountNumber);
+            }
+
             var billPays = await _context.BillPay.ToListAsync();
+            var filteredBillPays = new List<BillPay>();
+            foreach(var billPay in billPays)
+            {
+                if (billPay != null && accountNumbers.Contains(billPay.AccountNumber))
+                {
+                    filteredBillPays.Add(billPay);
+                }
+            }
             return View(new BillPayListViewModel
             {
-                BillPays = billPays
+                BillPays = filteredBillPays
             });
         }
 
