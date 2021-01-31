@@ -45,6 +45,7 @@ namespace InternetBanking
 
             // Add bill pay background service to automatically run in the background along-side the web-server.
             services.AddHostedService<BillPayBackgroundService>();
+            services.AddHostedService<AcitivityReportBackgroundService>();
 
             services.AddControllersWithViews();
         }
