@@ -1,6 +1,11 @@
-# s3677701_a2
 Second assignment for Web development technologies flexible semester.
 
+# What I learned 
+1. Creating a asp.net web api using the repository pattern.
+2. Creating background services in web apps. The billpay background service is responsible for triggering scheduled payments.
+3. Dependency Injection using MS DI.
+4. How to build secure web apps with authentication (custom and then with Identity Api) and use filters to prevent attacks like anti-forgery.
+5. How to implement pagination.
 
 To start:
 
